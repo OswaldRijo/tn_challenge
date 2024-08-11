@@ -4,33 +4,27 @@ import (
 	"context"
 
 	usersservicepb "truenorth/pb/users"
-	"truenorth/services/users_service/models"
 	usersrepo "truenorth/services/users_service/repositories/users"
 )
 
 //go:generate mockery --name=UserApi --output=../../../../mocks/users_service/api
 type UserApi interface {
 	CreateUser(ctx context.Context, user *usersservicepb.CreateUserRequests) (*usersservicepb.User, error)
-	GetUserByUsername(ctx context.Context, username string) (*models.User, error)
-	GetUser(ctx context.Context, id int64) (*models.User, error)
-	UpdateUser(ctx context.Context, user *models.User) error
+	GetUserByUsername(ctx context.Context, username string) (*usersservicepb.User, error)
+	GetUser(ctx context.Context, id int64) (*usersservicepb.User, error)
+	UpdateUser(ctx context.Context, user *usersservicepb.User) error
 }
 
 type UsersApiImpl struct {
 	usersRepository usersrepo.UsersRepo
 }
 
-func (u *UsersApiImpl) GetUserByUsername(ctx context.Context, username string) (*models.User, error) {
+func (u *UsersApiImpl) GetUser(ctx context.Context, id int64) (*usersservicepb.User, error) {
 	//TODO implement me
 	return nil, nil
 }
 
-func (u *UsersApiImpl) GetUser(ctx context.Context, id int64) (*models.User, error) {
-	//TODO implement me
-	return nil, nil
-}
-
-func (u *UsersApiImpl) UpdateUser(ctx context.Context, user *models.User) error {
+func (u *UsersApiImpl) UpdateUser(ctx context.Context, user *usersservicepb.User) error {
 	//TODO implement me
 	return nil
 }

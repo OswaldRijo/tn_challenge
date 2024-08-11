@@ -6,7 +6,6 @@ import (
 
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
-	"google.golang.org/protobuf/types/known/timestamppb"
 
 	"truenorth/packages/utils"
 	usersservicepb "truenorth/pb/users"
@@ -41,11 +40,5 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 		return nil, status.Errorf(codes.Internal, err.Error())
 	}
 
-	return &usersservicepb.User{
-		Id:        int64(user.ID),
-		Username:  user.Username,
-		Status:    usersservicepb.UserStatus(user.Status),
-		CreatedAt: timestamppb.New(user.CreatedAt),
-		UpdatedAt: timestamppb.New(user.UpdatedAt),
-	}, nil
+	return ParseUserModelToPB(user), nil
 }

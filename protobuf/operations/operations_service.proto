@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package pb.operations;
+
+option go_package = "truenorth/go/pb/operations";
+
+import "operations/structures.proto";
+import "google/protobuf/timestamp.proto";
+
+message ApplyOperationRequest {
+  OperationType operationType = 1;
+  repeated float args = 2;
+}
+
+message ApplyOperationResponse {
+  Record record = 1;
+}
+
+message GetUserBalanceRequest {
+  int64 user_id = 1;
+}
+
+message GetUserBalanceResponse {
+  Balance balance = 1;
+}
+
+message FilterRecordsRequest {
+  optional int64 balance = 1;
+  optional string limit = 2;
+  optional bool page = 3;
+}
+
+message FilterRecordsResponse {
+  repeated Record records = 1;
+}
+
+message DeleteRecordsRequest {
+  repeated int64 record_ids = 1;
+}
+
+message DeleteRecordsResponse {
+  repeated Record records = 1;
+}
+
+service OperationsService {
+  rpc ApplyOperation(ApplyOperationRequest) returns (ApplyOperationResponse) {}
+  rpc GetUserBalance(GetUserBalanceRequest) returns (GetUserBalanceResponse) {}
+  rpc FilterRecords(FilterRecordsRequest) returns (FilterRecordsResponse) {}
+  rpc DeleteRecords(DeleteRecordsRequest) returns (DeleteRecordsResponse) {}
+}

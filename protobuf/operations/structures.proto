@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package pb.operations;
+
+option go_package = "truenorth/go/pb/operations";
+
+import "google/protobuf/timestamp.proto";
+
+enum OperationType {
+    ADDITION = 0;
+    SUBTRACTION = 1;
+    MULTIPLICATION = 2;
+    DIVISION = 4;
+    SQUARE_ROOT = 5;
+    RANDOM_STRING = 6;
+}
+
+message Balance {
+  int64 id = 1;
+  int64 user_id = 2;
+  int64 current_balance = 3;
+  google.protobuf.Timestamp created_at = 4;
+  google.protobuf.Timestamp updated_at = 5;
+}
+
+message Operation {
+  int64 id = 1;
+  int64 user_id = 2;
+  OperationType operationType = 3;
+  int64 cost = 4;
+  repeated float args = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message Record {
+  int64 id = 1;
+  int64 operation_id = 2;
+  int64 amount = 3;
+  int64 user_balance = 4;
+  bool deleted = 5;
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+  Operation operation = 8;
+}

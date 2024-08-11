@@ -20,7 +20,7 @@ type UsersRepoImpl struct {
 	db *gorm.DB
 }
 
-func (u UsersRepoImpl) UpdateUser(ctx context.Context, user *models.User) error {
+func (u *UsersRepoImpl) UpdateUser(ctx context.Context, user *models.User) error {
 	//TODO implement me
 	panic("implement me")
 }

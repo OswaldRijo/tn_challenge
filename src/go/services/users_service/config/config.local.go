@@ -13,7 +13,7 @@ func loadLocal() {
 	Config.DBPass = utils.GetEnv("DB_PASS", "pass")
 	Config.DBName = utils.GetEnv("DB_NAME", "truenorth-db")
 	Config.ENV = "local"
-	Config.AppName = utils.GetEnv("APP_NAME", "backend-service")
+	Config.AppName = utils.GetEnv("APP_NAME", "users_service")
 	debugMode := utils.GetEnv("DEBUG", "true")
 	Config.Debug = debugMode == "true"
 	runMigrations := utils.GetEnv("RUN_MIGRATIONS", "false")

@@ -12,13 +12,23 @@ const (
 	StatusInactive
 )
 
-func (u *StatusEnum) Scan(value interface{}) error {
-	*u = StatusEnum(value.(int32))
+var statusIntToNameMap = map[StatusEnum]string{
+	StatusActive:   "ACTIVE",
+	StatusInactive: "INACTIVE",
+}
+var statusNameToValueMap = map[string]StatusEnum{
+	"ACTIVE":   StatusActive,
+	"INACTIVE": StatusInactive,
+}
+
+func (u StatusEnum) Scan(value interface{}) error {
+	u = statusNameToValueMap[value.(string)]
 	return nil
 }
 
-func (u *StatusEnum) Value() (driver.Value, error) {
-	return int32(*u), nil
+func (u StatusEnum) Value() (driver.Value, error) {
+	statusName := statusIntToNameMap[u]
+	return statusName, nil
 }
 
 type User struct {

@@ -6,10 +6,16 @@ option go_package = "truenorth/go/pb/users";
 
 import "google/protobuf/timestamp.proto";
 
+enum UserStatus {
+  ACTIVE = 0;
+  INACTIVE = 1;
+}
+
+
 message User {
   int64 id = 1;
   string username = 2;
   google.protobuf.Timestamp created_at = 3;
   google.protobuf.Timestamp updated_at = 4;
-  bool is_active = 5;
+  UserStatus status = 5;
 }

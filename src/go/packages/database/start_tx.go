@@ -6,7 +6,12 @@ import (
 )
 
 func RunDbTransaction(ctx context.Context, onRunningTxn func(ctx context.Context, tx *sql.Tx) error) error {
-	tx, err := db.BeginTx(ctx, nil)
+	dbConn, err := db.DB()
+	if err != nil {
+		return err
+	}
+
+	tx, err := dbConn.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}

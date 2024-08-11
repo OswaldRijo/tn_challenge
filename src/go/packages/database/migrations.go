@@ -16,13 +16,17 @@ import (
 
 func RunMigrations(ctx context.Context) {
 	dbInstance := GetInstance()
-	driver, err := postgres.WithInstance(dbInstance, &postgres.Config{})
+	dbConn, err := dbInstance.DB()
+	if err != nil {
+		panic(err)
+	}
+	driver, err := postgres.WithInstance(dbConn, &postgres.Config{})
 	if err != nil {
 		panic(err)
 	}
 	migrationPath := utils.GetEnv("MIGRATION_PATH", "")
 	m, err := migrate.NewWithDatabaseInstance(
-		fmt.Sprintf("file://./sql/migrations/%s", migrationPath),
+		fmt.Sprintf("file://./../sql/migrations/%s", migrationPath),
 		"postgres", driver)
 
 	if err != nil {

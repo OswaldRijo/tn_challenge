@@ -1,11 +1,11 @@
 package database
 
 import (
-	"database/sql"
 	"fmt"
 	"log"
-	"time"
 
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
 	"truenorth/packages/utils"
 )
 
@@ -19,18 +19,12 @@ func Init() error {
 		dbHost, dbPort, dbUser, dbPass, dbName)
 
 	db = getDbConn(url)
-	// SetMaxIdleConns sets the maximum number of connections in the idle connection pool.
-	db.SetMaxIdleConns(10)
-	// SetMaxOpenConns sets the maximum number of open connections to the database.
-	db.SetMaxOpenConns(20)
-	// SetConnMaxLifetime sets the maximum amount of time a connection may be reused.
-	db.SetConnMaxLifetime(2 * time.Hour)
 
 	return nil
 }
 
-func getDbConn(url string) *sql.DB {
-	dbConn, err := sql.Open("postgres", url)
+func getDbConn(url string) *gorm.DB {
+	dbConn, err := gorm.Open(postgres.Open(url), &gorm.Config{})
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -38,7 +32,7 @@ func getDbConn(url string) *sql.DB {
 	return dbConn
 }
 
-func GetInstance() *sql.DB {
+func GetInstance() *gorm.DB {
 	if db == nil {
 		err := Init()
 		if err != nil {
@@ -49,4 +43,4 @@ func GetInstance() *sql.DB {
 	return db
 }
 
-var db *sql.DB
+var db *gorm.DB

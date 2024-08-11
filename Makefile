@@ -1,0 +1,105 @@
+UNAME = $(shell uname -s)
+LOWER_UNAME = $(shell echo $(UNAME) | tr A-Z a-z)
+PROTO_DIR_GEN_GO = src/go/pb
+PROTO_DIR_GEN_NODE = src/node/pb
+
+# Tool versions
+PROTOC_VERSION = $(shell protoc --version)
+TARGET_PROTOC_VERSION = libprotoc 3.21.12
+PROTOC_GEN_GO_VERSION = $(shell protoc-gen-go --version)
+TARGET_PROTOC_GEN_GO_VERSION = protoc-gen-go v1.28.1
+PROTOC_GEN_GO_GRPC_VERSION = $(shell protoc-gen-go-grpc --version)
+TARGET_PROTOC_GEN_GO_GRPC_VERSION = protoc-gen-go-grpc 1.2.0
+GRPCIO_TOOLS_VERSION = $(shell pip show grpcio-tools | grep Version)
+TARGET_GRPCIO_TOOLS_VERSION = Version: 1.48.1
+
+
+ifeq ($(OS), Windows_NT)
+	SHELL := powershell.exe
+	.SHELLFLAGS := -NoProfile -Command
+	SHELL_VERSION = $(shell (Get-Host | Select-Object Version | Format-Table -HideTableHeaders | Out-String).Trim())
+	OS = $(shell "{0} {1}" -f "windows", (Get-ComputerInfo -Property OsVersion, OsArchitecture | Format-Table -HideTableHeaders | Out-String).Trim())
+	PACKAGE = $(shell (Get-Content go.mod -head 1).Split(" ")[1])
+	CHECK_DIR_CMD = if (!(Test-Path $@)) { $$e = [char]27; Write-Error "$$e[31mDirectory $@ doesn't exist$${e}[0m" }
+	HELP_CMD = Select-String "^[a-zA-Z_-]+:.*?\#\# .*$$" "./Makefile" | Foreach-Object { $$_data = $$_.matches -split ":.*?\#\# "; $$obj = New-Object PSCustomObject; Add-Member -InputObject $$obj -NotePropertyName ('Command') -NotePropertyValue $$_data[0]; Add-Member -InputObject $$obj -NotePropertyName ('Description') -NotePropertyValue $$_data[1]; $$obj } | Format-Table -HideTableHeaders @{Expression={ $$e = [char]27; "$$e[36m$$($$_.Command)$${e}[0m" }}, Description
+	RM_F_CMD = Remove-Item -erroraction sil entlycontinue -Force
+	RM_RF_CMD = ${RM_F_CMD} -Recurse
+	SERVER_BIN = ${SERVER_DIR}.exe
+else
+	SHELL := bash
+	SHELL_VERSION = $(shell echo $$BASH_VERSION)
+	UNAME := $(shell uname -s)
+	VERSION_AND_ARCH = $(shell uname -rm)
+	ifeq ($(UNAME),Darwin)
+		OS = macos ${VERSION_AND_ARCH}
+	else
+		OS = linux ${VERSION_AND_ARCH}
+	endif
+	PACKAGE = $(shell head -1 go.mod | awk '{print $$2}')
+	CHECK_DIR_CMD = test -d $@ || (echo "\033[31mDirectory $@ doesn't exist\033[0m" && false)
+	HELP_CMD = grep -E '^[a-zA-Z_-]+:.*?\#\# .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?\#\# "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
+	RM_F_CMD = rm -f
+	RM_RF_CMD = ${RM_F_CMD} -r
+	SERVER_BIN = ${SERVER_DIR}
+endif
+
+run_pb_mocks:
+	./scripts/run-mocks.sh
+	@echo "Mocks created successfully";
+
+run_go_fmt:
+	cd src/go && go fmt;
+
+run_go_generate:
+	cd src/go && go generate ./...;
+
+buf:
+	buf generate protobuf
+	@echo "Command ran successfully";
+
+go_mocks:
+	@echo "Running go mocks"
+	cd src/go && go generate ./...
+
+test: protos ## Launch tests
+	go test ./...
+
+coverage: protos ## Launch tests
+	go test ./... -cover
+
+rebuild: clean protos ## Rebuild the whole project
+
+about: ## Display info related to the build
+	@echo "OS: ${OS}"
+	@echo "Shell: ${SHELL} ${SHELL_VERSION}"
+	@echo "Protoc version: $(shell protoc --version)"
+	@echo "Go version: $(shell go version)"
+	@echo "Go package: ${PACKAGE}"
+	@echo "Openssl version: $(shell openssl version)"
+
+help: ## Show this help
+	@${HELP_CMD}
+
+clean_protos:
+	rm -rf ${PROTO_DIR_GEN_GO}
+
+protos: protos_go protos_npm
+
+protos_go: clean_protos buf run_pb_mocks run_go_generate run_go_fmt
+
+protos_npm: buf_node node_generate_index node_build
+
+go_generate:
+	cd src/go && go generate $(dir)
+
+buf_node:
+	cd npm && buf generate ./../protobuf
+	@echo "Command ran successfully";
+
+node_build:
+	npm run --prefix npm build
+	@echo "Command ran successfully";
+
+node_generate_index:
+	npm run --prefix npm generate-index
+	@echo "Index.ts created successfully";

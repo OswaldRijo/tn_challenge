@@ -1,0 +1,47 @@
+version: '3.7'
+
+services:
+  users_service:
+#    image: "265929096181.dkr.ecr.us-east-2.amazonaws.com/sc_backend:latest"
+    build:
+      context: ../../.
+      dockerfile: docker/Dockerfile
+      args:
+        BUILD_PATH: users_service
+        MIGRATION_PATH: users_service
+        TOKEN: $TOKEN
+        USER: $USER
+    ports:
+      - "11001:11001"
+    environment:
+      HASH_SALT: "3354961358384ce3a1436527f2825844"
+      DB_NAME: "truenorth-db"
+      DB_PASS: "pass"
+      DB_PORT: "5432"
+      DB_USER: "user"
+      DB_HOST: "postgres"
+      DEBUG: "true"
+      ENV: "dev"
+      PORT: "11001"
+      RUN_MIGRATIONS: "true"
+      MIGRATION_PATH: "users_service"
+    networks:
+      - default
+      - backend
+      - postgres_db
+#  collector:
+#    image: "otel/opentelemetry-collector:0.72.0"
+#    command: '--config /etc/otel-config.yaml'
+#    volumes:
+#      - ./otel-config.yaml:/etc/otel-config.yaml
+#      - ./otelcol_data.log:/tmp/otelcol_data.log
+#    ports:
+#      - 1777:1777
+#      - 6831:6831
+#      - 4317:4317 # OTLP gRPC receiver
+#      - 8888:8888
+networks:
+  backend:
+    external: true
+  postgres_db:
+    external: true

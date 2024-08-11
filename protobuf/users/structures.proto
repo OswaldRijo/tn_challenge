@@ -1,0 +1,15 @@
+syntax = "proto3";
+
+package pb.users;
+
+option go_package = "truenorth/go/pb/users";
+
+import "google/protobuf/timestamp.proto";
+
+message User {
+  int64 id = 1;
+  string username = 2;
+  google.protobuf.Timestamp created_at = 3;
+  google.protobuf.Timestamp updated_at = 4;
+  bool is_active = 5;
+}

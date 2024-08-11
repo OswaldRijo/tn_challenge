@@ -1,0 +1,184 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-cli: circleci/aws-cli@3.1.4
+  discord: antonioned/discord@0.1.0
+  go: circleci/go@1.11.0
+
+commands:
+  prepare-envs:
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - run:
+          name: Setting up build
+          command: >
+            . scripts/yaml-to-vars.sh;
+            parse_yaml docker/<< parameters.spec-file >>/spec.yaml "SPEC_" >> "$BASH_ENV";
+            echo export BUILD_PATH=$SPEC_APP_BUILD_PATH;
+            ./scripts/build-image.sh;
+  install-go:
+    steps:
+     - run:
+        name: Install Golang
+        command: |
+          ./scripts/install-go.sh;
+          echo 'export export GOPATH=$HOME/go' >> "$BASH_ENV"          
+          echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> "$BASH_ENV"
+  check-image-version:
+    steps:
+     - aws-cli/setup
+     - run:
+        name: Check Version tag does not exist
+        command: |
+          ./scripts/check-image-version.sh $SPEC_APP_ECR_REPO $SPEC_APP_VERSION;
+
+  run-unit-test:
+    steps:
+      - run:
+          name: go mod download
+          command: cd src && go mod download
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export PATH="$GOPATH"/bin:"$PATH"' >> "$BASH_ENV"
+      - run:
+          name: Run buf
+          command: |
+            ./scripts/install-buf.sh;
+            ./scripts/generate-go-buf.sh;
+
+      - run:
+          name: go test
+          command: cd src && go install github.com/vektra/mockery/v2@v2.35.4 && go generate ./... && go test ./$SPEC_APP_BUILD_PATH/...
+
+
+# the default pipeline parameters, which will be updated according to
+# the results of the path-filtering orb
+parameters:
+  users_service:
+    type: boolean
+    default: false
+  notification_svc:
+    type: boolean
+    default: false
+  email_connector_svc:
+    type: boolean
+    default: false
+
+jobs:
+  test_build_image:
+    executor:
+      name: go/default
+      tag: '1.20'
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - check-image-version
+      - run-unit-test
+      - setup_remote_docker
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./docker
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg TOKEN=$TOKEN --build-arg USER=$USER --build-arg BUILD_PATH=$SPEC_APP_BUILD_PATH --build-arg MIGRATION_PATH=$SPEC_APP_MIGRATIONS_DIR"
+          repo: "$SPEC_APP_ECR_REPO"
+          tag: "latest,$CIRCLE_SHA1,$SPEC_APP_VERSION"
+          push-image: false
+
+  build_and_push:
+    executor:
+      name: go/default
+      tag: '1.21'
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - run-unit-test
+      - setup_remote_docker
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./docker
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg TOKEN=$TOKEN --build-arg USER=$USER --build-arg BUILD_PATH=$SPEC_APP_BUILD_PATH --build-arg MIGRATION_PATH=$SPEC_APP_MIGRATIONS_DIR"
+          repo: "$SPEC_APP_ECR_REPO"
+          tag: "latest,$CIRCLE_SHA1,$SPEC_APP_VERSION"
+          push-image: true
+      - discord/status:
+          webhook: https://discord.com/api/webhooks/1037555668158255164/aVoMQrel-zjSg3SssZ6qmgFnuLimw49ld_3va4zzr34fm0mbqUtyMpCACNZ-OcF15K0H
+          success_message: ":tada: $CIRCLE_JOB job ran successfully, image $SPEC_APP_VERSION pushed to ecr"
+
+# here we specify our workflows, most of which are conditionally
+# executed based upon pipeline parameter values. Each workflow calls a
+# specific job defined above, in the jobs section.
+workflows:
+  # when pipeline parameter, run-build-service-1-job is true, the
+  # build-service-1 job is triggered.
+  backend-svc:
+    when: << pipeline.parameters.users_service >>
+    jobs:
+      - test_build_image:
+          spec-file: users_service
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master
+      - build_and_push:
+          spec-file: users_service
+          context: envs
+          filters:
+            branches:
+              only:
+                - master
+  email_connector-svc:
+    when: << pipeline.parameters.email_connector_svc >>
+    jobs:
+      - test_build_image:
+          spec-file: email_connector_svc
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master
+      - build_and_push:
+          spec-file: email_connector_svc
+          context: envs
+          filters:
+            branches:
+              only:
+                - master
+  notifications-svc:
+    when: << pipeline.parameters.notification_svc >>
+    jobs:
+      - test_build_image:
+          spec-file: notification_svc
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master
+      - build_and_push:
+          spec-file: notification_svc
+          context: envs
+          filters:
+            branches:
+              only:
+                - master

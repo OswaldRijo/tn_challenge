@@ -5,6 +5,7 @@ import (
 )
 
 func loadProd() {
+	Config.UserCreatedTopicArn = utils.GetEnv("USER_CREATED_TOPIC_ARN", "")
 	Config.Salt = utils.GetEnv("HASH_SALT")
 	Config.Port = utils.GetEnv("PORT")
 	Config.DBHost = utils.GetEnv("DB_HOST")

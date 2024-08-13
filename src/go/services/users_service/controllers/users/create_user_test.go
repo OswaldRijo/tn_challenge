@@ -11,7 +11,7 @@ const mjId = 23
 
 func (ucts *UserControllerTestSuite) Test_CreateUser_Success() {
 	// arrange
-	req := &usersservicepb.CreateUserRequests{Username: "some_username", Password: "some_password"}
+	req := &usersservicepb.CreateUserRequest{Username: "some_username", Password: "some_password"}
 	pbUserExpected := &usersservicepb.User{Username: req.GetUsername(), Id: mjId, IsActive: true}
 	ucts.usersApiMock.On("CreateUser", ucts.ctx, req).Return(pbUserExpected, nil).Once()
 
@@ -26,7 +26,7 @@ func (ucts *UserControllerTestSuite) Test_CreateUser_Success() {
 
 func (ucts *UserControllerTestSuite) Test_CreateUser_MissingUsername() {
 	// arrange
-	req := &usersservicepb.CreateUserRequests{Password: "some_password"}
+	req := &usersservicepb.CreateUserRequest{Password: "some_password"}
 	errExpected := users.MissingUsername
 
 	// act
@@ -42,7 +42,7 @@ func (ucts *UserControllerTestSuite) Test_CreateUser_MissingUsername() {
 
 func (ucts *UserControllerTestSuite) Test_CreateUser_MissingPassword() {
 	// arrange
-	req := &usersservicepb.CreateUserRequests{Username: "some_username"}
+	req := &usersservicepb.CreateUserRequest{Username: "some_username"}
 	errExpected := users.MissingPassword
 
 	// act

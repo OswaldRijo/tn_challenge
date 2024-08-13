@@ -7,11 +7,11 @@ import (
 	"truenorth/services/users_service/models"
 )
 
-const expectedId = uint(1)
+const expectedId = int64(1)
 
 func (ucts *UserApiTestSuite) Test_CreateUser_Success() {
 	// arrange
-	req := &usersservicepb.CreateUserRequests{Username: "some_username", Password: "some_password"}
+	req := &usersservicepb.CreateUserRequest{Username: "some_username", Password: "some_password"}
 
 	ucts.usersRepositoriesMock.On("GetUser", ucts.ctx, mock.MatchedBy(func(it map[string]interface{}) bool {
 		return it["username"] == req.GetUsername()
@@ -27,6 +27,6 @@ func (ucts *UserApiTestSuite) Test_CreateUser_Success() {
 
 	// assert
 	ucts.Nil(err)
-	ucts.Equal(expectedId, uint(user.GetId()))
+	ucts.Equal(expectedId, int64(user.GetId()))
 	ucts.NotNil(user)
 }

@@ -7,9 +7,11 @@ import (
 	"google.golang.org/grpc/reflection"
 
 	"truenorth/packages/logger"
+	"truenorth/packages/pubsub/consumer"
 	"truenorth/packages/service_conf"
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/config"
+	"truenorth/services/operations_service/consumers"
 	controller "truenorth/services/operations_service/controllers"
 )
 
@@ -27,6 +29,9 @@ func main() {
 		service_conf.WithMigrations(),
 		service_conf.WithPort(config.Config.Port),
 	)
+	sqsConsumer := consumer.NewConsumer()
+	sqsConsumer.AddQueue(config.Config.UserCreatedQueue, consumers.UserCreatedController)
+	sqsConsumer.Start()
 
 	localServer := controller.NewServer()
 	healthgrpc.RegisterHealthServer(s, localServer)

@@ -9,7 +9,8 @@ import (
 
 //go:generate mockery --name=UserApi --output=../../../../mocks/users_service/api
 type UserApi interface {
-	CreateUser(ctx context.Context, user *usersservicepb.CreateUserRequests) (*usersservicepb.User, error)
+	CheckCredentials(ctx context.Context, user *usersservicepb.CheckUserCredentialsRequest) (*usersservicepb.User, error)
+	CreateUser(ctx context.Context, user *usersservicepb.CreateUserRequest) (*usersservicepb.User, error)
 	GetUserByUsername(ctx context.Context, username string) (*usersservicepb.User, error)
 	GetUser(ctx context.Context, id int64) (*usersservicepb.User, error)
 	UpdateUser(ctx context.Context, user *usersservicepb.User) error

@@ -5,6 +5,7 @@ import (
 )
 
 func loadLocal() {
+	Config.UserCreatedTopicArn = utils.GetEnv("USER_CREATED_TOPIC_ARN", "")
 	Config.Salt = utils.GetEnv("HASH_SALT", "3354961358384ce3a1436527f2825844")
 	Config.Port = utils.GetEnv("PORT", "11001")
 	Config.DBHost = utils.GetEnv("DB_HOST", "localhost")
@@ -18,4 +19,5 @@ func loadLocal() {
 	Config.Debug = debugMode == "true"
 	runMigrations := utils.GetEnv("RUN_MIGRATIONS", "false")
 	Config.RunMigrations = runMigrations == "true"
+
 }

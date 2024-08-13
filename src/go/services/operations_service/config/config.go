@@ -5,16 +5,23 @@ import (
 )
 
 type configuration struct {
-	Port          string
-	DBHost        string
-	DBPort        string
-	DBUser        string
-	DBPass        string
-	DBName        string
-	ENV           string
-	AppName       string
-	Debug         bool
-	RunMigrations bool
+	Port                        string
+	DBHost                      string
+	DBPort                      string
+	DBUser                      string
+	DBPass                      string
+	DBName                      string
+	ENV                         string
+	AppName                     string
+	Debug                       bool
+	RunMigrations               bool
+	DefaultUserBalance          float64
+	AdditionOperationCost       float64
+	DivisionOperationCost       float64
+	MultiplicationOperationCost float64
+	RandomStringOperationCost   float64
+	SquareRootOperationCost     float64
+	UserCreatedQueue            string
 }
 
 var Config = configuration{}

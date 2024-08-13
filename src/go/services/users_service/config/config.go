@@ -5,17 +5,18 @@ import (
 )
 
 type configuration struct {
-	Port          string
-	DBHost        string
-	DBPort        string
-	DBUser        string
-	DBPass        string
-	DBName        string
-	Salt          string
-	ENV           string
-	AppName       string
-	Debug         bool
-	RunMigrations bool
+	Port                string
+	DBHost              string
+	DBPort              string
+	DBUser              string
+	DBPass              string
+	DBName              string
+	Salt                string
+	ENV                 string
+	AppName             string
+	Debug               bool
+	RunMigrations       bool
+	UserCreatedTopicArn string
 }
 
 var Config = configuration{}

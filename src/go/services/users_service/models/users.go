@@ -32,7 +32,7 @@ func (u StatusEnum) Value() (driver.Value, error) {
 }
 
 type User struct {
-	ID        uint   `gorm:"primaryKey"`
+	ID        int64  `gorm:"primaryKey"`
 	Username  string `gorm:"index"`
 	Password  string
 	Status    StatusEnum

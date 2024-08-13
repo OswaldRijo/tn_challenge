@@ -87,19 +87,20 @@ protos: protos_go protos_npm
 
 protos_go: clean_protos buf run_pb_mocks run_go_generate run_go_fmt
 
-protos_npm: buf_node node_generate_index node_build
+protos_npm: buf_node node_generate_index pb_link_dir
 
 go_generate:
 	cd src/go && go generate $(dir)
 
 buf_node:
-	cd npm && buf generate ./../protobuf
+	cd src/node/pb && buf generate ./../../../protobuf
 	@echo "Command ran successfully";
 
-node_build:
-	npm run --prefix npm build
+pb_link_dir:
+	rm -rf src/node/public_api/src/pb
+	cp -r src/node/pb/src src/node/public_api/src/pb
 	@echo "Command ran successfully";
 
 node_generate_index:
-	npm run --prefix npm generate-index
+	pnpm run --prefix src/node/pb generate-index
 	@echo "Index.ts created successfully";

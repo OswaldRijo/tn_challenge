@@ -1,11 +1,10 @@
 #!/bin/sh
-PROJECT=truenorthchallenge
+PROJECT=true_north_challenge
 # buf is installed to ~/bin/your-project-name.
 PATH=$PATH:$GOPATH/bin
 BIN_DIR=$HOME/bin/$PROJECT
 
-cd npm && $BIN_DIR/buf generate ./../protobuf
-npm run generate-index
-npm run build
+cd src/node/pb && $BIN_DIR/buf generate ./../../../protobuf
+pnpm run generate-index
 
 echo "Command ran successfully"

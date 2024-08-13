@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  tn_public_api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    environment:
+      DEBUG: "true"
+      ENV: "development"
+      PORT: "8080"
+      USERS_SERVICE_PATH: "local.tn_backend:8080"
+      OPERATIONS_SERVICE_PATH: "local.tn_backend:8080"
+      AWS_REGION: "us-east-2"
+      JWT_SECRET: "FFXIjtdsZySOIVoiLYXPDtGSqrtsK4v4zU0HMMefnS4="
+      CLIENT_HOST: "http://localhost:8080"
+      NODE_ENV: "development"
+    networks:
+      - default
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  backend:
+    external: true

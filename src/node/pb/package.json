@@ -1,0 +1,33 @@
+{
+  "name": "truenorthpb",
+  "version": "1.0.0",
+  "description": "Prototypes",
+  "type": "commonjs",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://satori.git"
+  },
+  "author": "Oswald Rijo",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://satori/issues"
+  },
+  "homepage": "https://satori#readme",
+  "scripts": {
+    "build": "tsc",
+    "generate-index": "node ./scripts/generate-index.js"
+  },
+  "files": [
+    "/dist"
+  ],
+  "dependencies": {
+    "@protobuf-ts/plugin": "^2.9.4",
+    "@protobuf-ts/runtime": "^2.9.4",
+    "@protobuf-ts/runtime-rpc": "^2.9.4"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.5"
+  }
+}

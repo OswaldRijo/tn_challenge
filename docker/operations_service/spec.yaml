@@ -1,0 +1,11 @@
+APP:
+  VERSION: 1.7.10
+  NAME: users_service
+  ECR_REPO: tn-users-service
+  MIGRATIONS_DIR: users_service
+  BUILD_PATH: users_service
+  ENVS:
+    STAGING:
+      SECRETS: tn_secrets_backend_staging
+    PROD:
+      SECRETS: sc_secrets_backend_prod

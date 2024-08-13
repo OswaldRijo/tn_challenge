@@ -18,7 +18,7 @@ enum OperationType {
 message Balance {
   int64 id = 1;
   int64 user_id = 2;
-  int64 current_balance = 3;
+  double current_balance = 3;
   google.protobuf.Timestamp created_at = 4;
   google.protobuf.Timestamp updated_at = 5;
 }
@@ -26,9 +26,9 @@ message Balance {
 message Operation {
   int64 id = 1;
   int64 user_id = 2;
-  OperationType operationType = 3;
-  int64 cost = 4;
-  repeated float args = 5;
+  OperationType operation_type = 3;
+  double cost = 4;
+  bytes args = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
@@ -36,10 +36,11 @@ message Operation {
 message Record {
   int64 id = 1;
   int64 operation_id = 2;
-  int64 amount = 3;
-  int64 user_balance = 4;
+  double amount = 3;
+  double user_balance = 4;
   bool deleted = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
-  Operation operation = 8;
+  bytes operation_response = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
+  Operation operation = 9;
 }

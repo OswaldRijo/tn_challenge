@@ -7,7 +7,7 @@ option go_package = "truenorth/go/pb/users";
 import "users/structures.proto";
 import "google/protobuf/timestamp.proto";
 
-message CreateUserRequests {
+message CreateUserRequest {
   string username = 1;
   string password = 2;
 }
@@ -40,8 +40,19 @@ message DeleteUserResponse {
   User user = 1;
 }
 
+
+message CheckUserCredentialsRequest {
+  string username = 1;
+  string password = 2;
+}
+
+message CheckUserCredentialsResponse {
+  User user = 1;
+}
+
 service UserService {
-  rpc CreateUser(CreateUserRequests) returns (CreateUserResponse) {}
+  rpc CheckUserCredentials(CheckUserCredentialsRequest) returns (CheckUserCredentialsResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
   rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
   rpc GetUserByUsername(GetUserByUsernameRequest) returns (GetUserByUsernameResponse) {}
   rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}

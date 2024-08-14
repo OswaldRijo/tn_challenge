@@ -7,11 +7,11 @@ import (
 )
 
 func HandleApiError(err error) codes.Code {
-	var e APIErrorResource
-	switch {
-	case errors.As(err, &e):
+	var e *APIErrorResource
+	isApiErr := errors.As(err, &e)
+	if isApiErr {
 		return e.GetCode()
-	default:
-		return codes.InvalidArgument
 	}
+
+	return codes.InvalidArgument
 }

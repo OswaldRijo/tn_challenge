@@ -27,8 +27,8 @@ func ParseRecordModelToPb(record *models.Record) *operationspb.Record {
 		CreatedAt:         timestamppb.New(record.CreatedAt),
 		UpdatedAt:         timestamppb.New(record.UpdatedAt),
 	}
-	if record.Operation != nil {
-		r.Operation = ParseOperationModelToPb(record.Operation)
+	if record.Operation.ID != 0 {
+		r.Operation = ParseOperationModelToPb(&record.Operation)
 	}
 	return r
 }

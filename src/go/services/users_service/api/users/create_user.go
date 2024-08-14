@@ -5,10 +5,9 @@ import (
 	"fmt"
 	"time"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
+	"truenorth/packages/common"
 	"truenorth/packages/database"
 	"truenorth/packages/pubsub/publisher"
 	"truenorth/packages/utils"
@@ -21,15 +20,15 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 	user, err := u.usersRepository.GetUser(ctx, map[string]interface{}{"username": userRequest.GetUsername()})
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, err.Error())
+		return nil, common.NewAPIErrorInternal(err)
 	}
 
 	if user != nil {
-		return nil, status.Errorf(codes.InvalidArgument, UserAlreadyExistsError)
+		return nil, common.NewAPIErrorInvalidArgument(fmt.Errorf(UserAlreadyExistsError))
 	}
 	passHashed, err := utils.HashString(userRequest.GetPassword(), config.Config.Salt)
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, err.Error())
+		return nil, common.NewAPIErrorInternal(err)
 	}
 	user = &models.User{
 		Username:  userRequest.GetUsername(),
@@ -42,7 +41,7 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 	err = database.PerformDbTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
 		err = u.usersRepository.CreateUser(ctx, user, tx)
 		if err != nil {
-			return status.Errorf(codes.Internal, err.Error())
+			return common.NewAPIErrorInternal(err)
 		}
 
 		messageMap := make(map[string]interface{})
@@ -52,7 +51,7 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 
 		err = producer.SendMessage(ctx, messageMap)
 		if err != nil {
-			return status.Errorf(codes.Internal, err.Error())
+			return common.NewAPIErrorInternal(err)
 		}
 
 		return nil

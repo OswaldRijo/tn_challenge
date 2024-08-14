@@ -4,10 +4,9 @@ import (
 	"context"
 	"time"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
+	"truenorth/packages/common"
 	"truenorth/packages/database"
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/config"
@@ -33,7 +32,7 @@ func (u *OperationsApiImpl) CreateUserBalance(ctx context.Context, userId int64)
 			SetCurrentBalance(config.Config.DefaultUserBalance)
 		err = u.balancesRepo.CreateBalance(ctx, userBalance, tx)
 		if err != nil {
-			return status.Error(codes.Internal, err.Error())
+			return common.NewAPIErrorInternal(err)
 		}
 
 		return nil

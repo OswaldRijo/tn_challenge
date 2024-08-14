@@ -2,11 +2,12 @@ package operations
 
 import (
 	"context"
+	"errors"
+	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
 	"gorm.io/gorm"
 
+	"truenorth/packages/common"
 	"truenorth/packages/database"
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/models"
@@ -15,12 +16,16 @@ import (
 func (u *OperationsApiImpl) DeleteRecord(ctx context.Context, deleteRecordReq *operationspb.DeleteRecordsRequest) ([]*operationspb.Record, *operationspb.Balance, error) {
 	records, err := u.recordsRepo.FindRecordsByIds(ctx, deleteRecordReq.GetRecordIds()...)
 	if err != nil {
-		return nil, nil, status.Error(codes.Internal, err.Error())
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return nil, nil, common.NewAPIErrorResourceNotFound(err)
+		}
+		return nil, nil, common.NewAPIErrorInternal(err)
+
 	}
 
 	userBalance, err := u.balancesRepo.GetBalanceByUserId(ctx, deleteRecordReq.GetUserId())
 	if err != nil {
-		return nil, nil, status.Error(codes.Internal, err.Error())
+		return nil, nil, common.NewAPIErrorInternal(err)
 	}
 
 	err = u.checkRecordsBelongsToUser(records, userBalance)
@@ -34,13 +39,16 @@ func (u *OperationsApiImpl) DeleteRecord(ctx context.Context, deleteRecordReq *o
 		for _, r := range records {
 			err = u.recordsRepo.DeleteRecordById(ctx, r.ID, tx)
 			if err != nil {
-				return status.Errorf(codes.Internal, err.Error())
+				if errors.Is(err, gorm.ErrRecordNotFound) {
+					return common.NewAPIErrorResourceNotFound(err)
+				}
+				return common.NewAPIErrorInternal(err)
 			}
 		}
 
 		err = u.balancesRepo.UpdateBalance(ctx, userBalance, tx)
 		if err != nil {
-			return status.Errorf(codes.Internal, err.Error())
+			return common.NewAPIErrorInternal(err)
 		}
 
 		return nil
@@ -56,7 +64,7 @@ func (u *OperationsApiImpl) DeleteRecord(ctx context.Context, deleteRecordReq *o
 func (u *OperationsApiImpl) checkRecordsBelongsToUser(records []*models.Record, balance *models.Balance) error {
 	for _, record := range records {
 		if record.UserID != balance.UserID {
-			return status.Error(codes.PermissionDenied, RecordDoesNotBelongToTheUser)
+			return common.NewAPIErrorPermissionsDenied(fmt.Errorf(RecordDoesNotBelongToTheUser))
 		}
 	}
 	return nil

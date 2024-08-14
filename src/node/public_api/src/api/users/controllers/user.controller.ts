@@ -4,9 +4,8 @@ import {
   GetUserResponse,
   CreateUserRequest,
 } from '@/pb';
-import { extractRpcErrorMessage } from '@/utils/rpc-errors';
+import { throwErrorBasedOnType } from '@/utils/rpc-errors';
 import {
-  BadRequestException,
   Body,
   Controller,
   Get,
@@ -54,10 +53,7 @@ export class UserController {
       const { response } = await this.usersService.getUser({ id: params.id });
       return response;
     } catch (e) {
-      throw new BadRequestException({
-        code: 'BAD_REQUEST',
-        message: extractRpcErrorMessage(e),
-      });
+      throwErrorBasedOnType(e);
     }
   }
 
@@ -70,10 +66,7 @@ export class UserController {
       const { response } = await this.usersService.createUser(body);
       return response;
     } catch (e) {
-      throw new BadRequestException({
-        code: 'BAD_REQUEST',
-        message: extractRpcErrorMessage(e),
-      });
+      throwErrorBasedOnType(e);
     }
   }
 }

@@ -2,6 +2,7 @@ package records
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -9,11 +10,13 @@ import (
 )
 
 func (rri *RecordsRepoImpl) DeleteRecordById(ctx context.Context, recordId int64, tx *gorm.DB) error {
-	operation := &models.Record{ID: recordId, Deleted: true}
-	result := tx.WithContext(ctx).Save(operation)
+	records := &models.Record{}
+	result := tx.WithContext(ctx).Preload("Operation").Where(map[string]interface{}{"id": recordId, "deleted": false}).First(&records)
 	if result.Error != nil {
 		return result.Error
 	}
 
-	return nil
+	records.Deleted = true
+	records.UpdatedAt = time.Now()
+	return tx.Save(records).Error
 }

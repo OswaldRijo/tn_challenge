@@ -17,3 +17,24 @@ func NewAPIErrorResourceNotFound(err error) *APIErrorResource {
 		code:  codes.NotFound,
 	}
 }
+
+func NewAPIErrorInternal(err error) *APIErrorResource {
+	return &APIErrorResource{
+		error: err,
+		code:  codes.Internal,
+	}
+}
+
+func NewAPIErrorInvalidArgument(err error) *APIErrorResource {
+	return &APIErrorResource{
+		error: err,
+		code:  codes.InvalidArgument,
+	}
+}
+
+func NewAPIErrorPermissionsDenied(err error) *APIErrorResource {
+	return &APIErrorResource{
+		error: err,
+		code:  codes.PermissionDenied,
+	}
+}

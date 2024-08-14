@@ -2,10 +2,9 @@ package users
 
 import (
 	"context"
+	"fmt"
 
-	"google.golang.org/grpc/codes"
-	"google.golang.org/grpc/status"
-
+	"truenorth/packages/common"
 	usersservicepb "truenorth/pb/users"
 )
 
@@ -13,11 +12,11 @@ func (u *UsersApiImpl) GetUserByUsername(ctx context.Context, username string) (
 	user, err := u.usersRepository.GetUser(ctx, map[string]interface{}{"username": username})
 
 	if err != nil {
-		return nil, status.Errorf(codes.Internal, err.Error())
+		return nil, common.NewAPIErrorInternal(err)
 	}
 
 	if user == nil {
-		return nil, status.Errorf(codes.InvalidArgument, UserNotFoundError)
+		return nil, common.NewAPIErrorInvalidArgument(fmt.Errorf(UserNotFoundError))
 	}
 
 	return ParseUserModelToPB(user), nil

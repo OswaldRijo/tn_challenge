@@ -14,7 +14,7 @@ type Record struct {
 	Deleted           bool
 	OperationResponse string
 
-	Operation *Operation
+	Operation Operation `gorm:"foreignKey:OperationID"`
 }
 
 func (r *Record) SetCreatedAt(createdAt time.Time) *Record {

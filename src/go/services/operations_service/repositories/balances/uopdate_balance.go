@@ -2,6 +2,7 @@ package balances
 
 import (
 	"context"
+	"time"
 
 	"gorm.io/gorm"
 
@@ -9,6 +10,7 @@ import (
 )
 
 func (bri *BalancesRepoImpl) UpdateBalance(ctx context.Context, balance *models.Balance, tx *gorm.DB) error {
+	balance.UpdatedAt = time.Now()
 	result := tx.WithContext(ctx).Updates(balance)
 
 	if result.Error != nil {

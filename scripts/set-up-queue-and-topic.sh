@@ -1,8 +1,8 @@
 #!/bin/sh
 AWS_REGION=us-east-2
 AWS_ACCOUNT=$(aws sts get-caller-identity --query "Account" --output text)
-TOPIC_NAME=tn.user.created.topic
-QUEUE_NAME=tn.user.created.queue
+TOPIC_NAME=tn_user_created_topic
+QUEUE_NAME=tn_user_created_queue
 
 TOPIC_ARN=$(aws sns list-topics --query "Topics[?ends_with(TopicArn, ':$TOPIC_NAME')].TopicArn" --output text)
 if [ -z "$TOPIC_ARN" ]; then

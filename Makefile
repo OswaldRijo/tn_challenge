@@ -3,16 +3,6 @@ LOWER_UNAME = $(shell echo $(UNAME) | tr A-Z a-z)
 PROTO_DIR_GEN_GO = src/go/pb
 PROTO_DIR_GEN_NODE = src/node/pb
 
-# Tool versions
-PROTOC_VERSION = $(shell protoc --version)
-TARGET_PROTOC_VERSION = libprotoc 3.21.12
-PROTOC_GEN_GO_VERSION = $(shell protoc-gen-go --version)
-TARGET_PROTOC_GEN_GO_VERSION = protoc-gen-go v1.28.1
-PROTOC_GEN_GO_GRPC_VERSION = $(shell protoc-gen-go-grpc --version)
-TARGET_PROTOC_GEN_GO_GRPC_VERSION = protoc-gen-go-grpc 1.2.0
-GRPCIO_TOOLS_VERSION = $(shell pip show grpcio-tools | grep Version)
-TARGET_GRPCIO_TOOLS_VERSION = Version: 1.48.1
-
 
 ifeq ($(OS), Windows_NT)
 	SHELL := powershell.exe

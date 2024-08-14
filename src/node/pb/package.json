@@ -28,6 +28,7 @@
     "@protobuf-ts/runtime-rpc": "^2.9.4"
   },
   "devDependencies": {
+    "ts-protoc-gen": "^0.15.0",
     "typescript": "^5.4.5"
   }
 }

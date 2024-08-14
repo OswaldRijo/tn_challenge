@@ -4,6 +4,7 @@ specifiers:
   '@protobuf-ts/plugin': ^2.9.4
   '@protobuf-ts/runtime': ^2.9.4
   '@protobuf-ts/runtime-rpc': ^2.9.4
+  ts-protoc-gen: ^0.15.0
   typescript: ^5.4.5
 
 dependencies:
@@ -12,6 +13,7 @@ dependencies:
   '@protobuf-ts/runtime-rpc': 2.9.4
 
 devDependencies:
+  ts-protoc-gen: 0.15.0
   typescript: 5.4.5
 
 packages:
@@ -48,6 +50,17 @@ packages:
   /@protobuf-ts/runtime/2.9.4:
     resolution: {integrity: sha512-vHRFWtJJB/SiogWDF0ypoKfRIZ41Kq+G9cEFj6Qm1eQaAhJ1LDFvgZ7Ja4tb3iLOQhz0PaoPnnOijF1qmEqTxg==}
     dev: false
+
+  /google-protobuf/3.21.4:
+    resolution: {integrity: sha512-MnG7N936zcKTco4Jd2PX2U96Kf9PxygAPKBug+74LHzmHXmceN16MmRcdgZv+DGef/S9YvQAfRsNCn4cjf9yyQ==}
+    dev: true
+
+  /ts-protoc-gen/0.15.0:
+    resolution: {integrity: sha512-TycnzEyrdVDlATJ3bWFTtra3SCiEP0W0vySXReAuEygXCUr1j2uaVyL0DhzjwuUdQoW5oXPwk6oZWeA0955V+g==}
+    hasBin: true
+    dependencies:
+      google-protobuf: 3.21.4
+    dev: true
 
   /typescript/3.9.10:
     resolution: {integrity: sha512-w6fIxVE/H1PkLKcCPsFqKE7Kv7QUwhU8qQY2MueZXWx5cPZdwFupLgKK3vntcK98BtNHZtAF4LA/yl2a7k8R6Q==}

@@ -10,7 +10,7 @@ services:
         MIGRATION_PATH: operations_service
         USER: $USER
     ports:
-      - "11001:11001"
+      - "11002"
     environment:
       DB_NAME: "truenorth_operations_db"
       DB_PASS: "pass"
@@ -19,7 +19,7 @@ services:
       DB_HOST: "database_postgres_1"
       DEBUG: "true"
       ENV: "dev"
-      PORT: "11001"
+      PORT: "11002"
       RUN_MIGRATIONS: "true"
       MIGRATION_PATH: "operations_service"
       DEFAULT_USER_BALANCE: "500"
@@ -29,10 +29,11 @@ services:
       MULTIPLICATION_OPERATION_COST: "3"
       SQUARE_ROOT_OPERATION_COST: "5"
       RANDOM_STRING_OPERATION_COST: "7"
-      USER_CREATED_QUEUE: "tn.user.created.queue"
+      USER_CREATED_QUEUE: $USER_CREATED_QUEUE
       AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
       AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
       AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+      AWS_REGION: $AWS_REGION
     networks:
       - default
       - backend

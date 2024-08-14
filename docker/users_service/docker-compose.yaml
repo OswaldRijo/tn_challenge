@@ -10,7 +10,7 @@ services:
         MIGRATION_PATH: users_service
         USER: $USER
     ports:
-      - "11001:11001"
+      - "11001"
     environment:
       HASH_SALT: "3354961358384ce3a1436527f2825844"
       DB_NAME: "truenorth_db"
@@ -19,11 +19,15 @@ services:
       DB_USER: "user"
       DB_HOST: "database_postgres_1"
       DEBUG: "true"
-      USER_CREATED_TOPIC_ARN: "topic"
       ENV: "dev"
       PORT: "11001"
       RUN_MIGRATIONS: "true"
       MIGRATION_PATH: "users_service"
+      USER_CREATED_TOPIC_ARN: $USER_CREATED_TOPIC_ARN
+      AWS_ACCESS_KEY_ID: $AWS_ACCESS_KEY_ID
+      AWS_SECRET_ACCESS_KEY: $AWS_SECRET_ACCESS_KEY
+      AWS_SESSION_TOKEN: $AWS_SESSION_TOKEN
+      AWS_REGION: $AWS_REGION
     networks:
       - default
       - backend

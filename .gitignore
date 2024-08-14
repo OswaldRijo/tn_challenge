@@ -56,3 +56,4 @@ proto/gen
 build
 src/go/pb
 src/go/mocks
+src/node/pb/src

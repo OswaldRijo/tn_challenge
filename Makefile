@@ -81,6 +81,9 @@ help: ## Show this help
 	@${HELP_CMD}
 
 clean_protos:
+	rm -rf ${PROTO_DIR_GEN_NODE}/src
+	mkdir ${PROTO_DIR_GEN_NODE}/src
+	touch ${PROTO_DIR_GEN_NODE}/src/index.ts
 	rm -rf ${PROTO_DIR_GEN_GO}
 
 protos: protos_go protos_npm
@@ -93,12 +96,12 @@ go_generate:
 	cd src/go && go generate $(dir)
 
 buf_node:
-	cd src/node/pb && buf generate ./../../../protobuf
+	cd ${PROTO_DIR_GEN_NODE} && buf generate ./../../../protobuf
 	@echo "Command ran successfully";
 
 pb_link_dir:
 	rm -rf src/node/public_api/src/pb
-	cp -r src/node/pb/src src/node/public_api/src/pb
+	cp -r ${PROTO_DIR_GEN_NODE}/src src/node/public_api/src/pb
 	@echo "Command ran successfully";
 
 node_generate_index:

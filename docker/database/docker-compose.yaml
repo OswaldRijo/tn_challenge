@@ -1,0 +1,21 @@
+version: '3.7'
+
+services:
+  postgres:
+    image: postgres:14.13-alpine3.20
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_PASSWORD: "pass"
+      POSTGRES_USER: "user"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - default
+      - postgres_db
+volumes:
+  postgres_data:
+    driver: local
+networks:
+  postgres_db:
+    external: true

@@ -54,13 +54,13 @@ func loadDev() {
 	Config.DBPort = utils.GetEnv("DB_PORT", "5432")
 	Config.DBUser = utils.GetEnv("DB_USER", "user")
 	Config.DBPass = utils.GetEnv("DB_PASS", "pass")
-	Config.DBName = utils.GetEnv("DB_NAME", "truenorth-db")
+	Config.DBName = utils.GetEnv("DB_NAME", "truenorth_db")
 	Config.ENV = "dev"
 	Config.AppName = utils.GetEnv("APP_NAME", "operations_service")
 	debugMode := utils.GetEnv("DEBUG", "false")
 	Config.Debug = debugMode == "true"
 	runMigrations := utils.GetEnv("RUN_MIGRATIONS", "false")
-	Config.UserCreatedQueue = utils.GetEnv("USER_CREATED_QUEUE", "user-created-consumer-dev")
+	Config.UserCreatedQueue = utils.GetEnv("USER_CREATED_QUEUE", "")
 	Config.RunMigrations = runMigrations == "true"
 	Config.DefaultUserBalance = defaultUserBalance
 	Config.AdditionOperationCost = additionOperationCost

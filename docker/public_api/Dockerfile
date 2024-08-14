@@ -1,22 +1,32 @@
-FROM node:19.1.0-alpine AS base
+FROM node:22.6.0-alpine3.20 AS base
 
 # Install dependencies only when needed
 FROM base AS deps
+
+ARG USER
+ARG BUILD_PATH
+
+ENV USER=$USER
+ENV BUILD_PATH=$BUILD_PATH
+
 # Check https://github.com/nodejs/docker-node/tree/b4117f9333da4138b03a546ec926ef50a31506c3#nodealpine to understand why libc6-compat might be needed.
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY .npmrc ./
+COPY src/node/$BUILD_PATH/.npmrc ./
 # Install dependencies based on the preferred package manager
-COPY package.json pnpm-lock.yaml* ./
+COPY src/node/$BUILD_PATH/package.json ./
+COPY src/node/$BUILD_PATH/pnpm-lock.yaml ./
 RUN npm -g add pnpm && pnpm i --frozen-lockfile;
-
 
 # Rebuild the source code only when needed
 FROM base AS builder
+ARG BUILD_PATH
+ENV BUILD_PATH=$BUILD_PATH
+
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY . .
+COPY src/node/$BUILD_PATH ./
 
 # Next.js collects completely anonymous telemetry.ts data about general usage.
 # Learn more here: https://nextjs.org/telemetry

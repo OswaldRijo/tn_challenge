@@ -4,7 +4,7 @@ PROJECT=true_north_challenge
 PATH=$PATH:$GOPATH/bin
 BIN_DIR=$HOME/bin/$PROJECT
 
-cd src/node/pb && $BIN_DIR/buf generate ./../../../protobuf
+cd src/node/pb && buf generate ./../../../protobuf
 pnpm run generate-index
 
 echo "Command ran successfully"

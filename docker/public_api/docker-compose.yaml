@@ -4,7 +4,9 @@ services:
   tn_public_api:
     build:
       context: ../../.
-      dockerfile: Dockerfile
+      dockerfile: docker/public_api/Dockerfile
+      args:
+        BUILD_PATH: public_api
     ports:
       - "8080:8080"
     environment:

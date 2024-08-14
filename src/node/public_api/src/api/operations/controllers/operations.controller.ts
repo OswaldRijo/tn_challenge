@@ -10,7 +10,7 @@ import { OperationsService } from '@/api/operations/services/operations.service'
 import { AuthGuard } from '@/api/auth/guards/jwt-auth.guard';
 
 @Controller('api/operations')
-export class BrandsController {
+export class OperationsController {
   constructor(private readonly operationsService: OperationsService) {}
 
   @Post()

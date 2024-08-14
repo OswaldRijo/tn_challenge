@@ -1,25 +1,31 @@
 package operations_strategies
 
+import (
+	"context"
+	"errors"
+
+	"truenorth/services/operations_service/config"
+)
+
 type AdditionOperationStrategy struct {
 	*OperationStrategyImpl
 	result float64
 	args   []float64
 }
 
-func (aos *AdditionOperationStrategy) setArgs(args ...float64) *AdditionOperationStrategy {
-	aos.args = args
-	return aos
-}
-
-func (aos *AdditionOperationStrategy) GetResultAsJson() ([]byte, error) {
-	return serializeResultAsJson(aos.result)
+func (aos *AdditionOperationStrategy) GetResult() string {
+	return parseResultToString(aos.result)
 }
 
 func (aos *AdditionOperationStrategy) GetArgsAsJson() ([]byte, error) {
-	return serializeResultAsJson(aos.args)
+	return serializeArgsAsJson(aos.args...)
 }
 
-func (aos *AdditionOperationStrategy) Apply() error {
+func (aos *AdditionOperationStrategy) Apply(ctx context.Context) error {
+	if len(aos.args) < 2 {
+		return errors.New(ArgsLengthMustBeBiggerThanOne)
+	}
+
 	aos.result = 0
 	for _, arg := range aos.args {
 		aos.result += arg
@@ -28,14 +34,14 @@ func (aos *AdditionOperationStrategy) Apply() error {
 	return nil
 }
 
-func NewAdditionOperationStrategy() *AdditionOperationStrategy {
+func NewAdditionOperationStrategy(args ...float64) *AdditionOperationStrategy {
 	return &AdditionOperationStrategy{
 		OperationStrategyImpl: &OperationStrategyImpl{
-			cost:                      100,
+			cost:                      config.Config.AdditionOperationCost,
 			userBalance:               0,
 			userBalanceAfterOperation: 0,
 		},
 		result: float64(0),
-		args:   []float64{},
+		args:   args,
 	}
 }

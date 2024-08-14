@@ -1,40 +1,44 @@
 package operations_strategies
 
-import "math"
+import (
+	"context"
+	"errors"
+	"math"
+
+	"truenorth/services/operations_service/config"
+)
 
 type SquareRootOperationStrategy struct {
 	*OperationStrategyImpl
 	result float64
-	args   float64
+	args   []float64
 }
 
-func (sros *SquareRootOperationStrategy) setArgs(args float64) *SquareRootOperationStrategy {
-	sros.args = args
-	return sros
-}
-
-func (sros *SquareRootOperationStrategy) GetResultAsJson() ([]byte, error) {
-	return serializeResultAsJson(sros.result)
+func (sros *SquareRootOperationStrategy) GetResult() string {
+	return parseResultToString(sros.result)
 }
 
 func (sros *SquareRootOperationStrategy) GetArgsAsJson() ([]byte, error) {
-	return serializeResultAsJson(sros.args)
+	return serializeArgsAsJson(sros.args...)
 }
 
-func (sros *SquareRootOperationStrategy) Apply() error {
-	sros.result = math.Sqrt(sros.args)
+func (sros *SquareRootOperationStrategy) Apply(ctx context.Context) error {
+	if len(sros.args) != 1 {
+		return errors.New(ArgsLengthMustBeOne)
+	}
+	sros.result = math.Sqrt(sros.args[0])
 	sros.deductCostFromUserBalance()
 	return nil
 }
 
-func NewSquareRootOperationStrategy() *SquareRootOperationStrategy {
+func NewSquareRootOperationStrategy(arg ...float64) *SquareRootOperationStrategy {
 	return &SquareRootOperationStrategy{
 		OperationStrategyImpl: &OperationStrategyImpl{
-			cost:                      100,
+			cost:                      config.Config.SquareRootOperationCost,
 			userBalance:               0,
 			userBalanceAfterOperation: 0,
 		},
 		result: float64(0),
-		args:   0,
+		args:   arg,
 	}
 }

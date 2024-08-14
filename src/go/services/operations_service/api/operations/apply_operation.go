@@ -20,10 +20,14 @@ func (u *OperationsApiImpl) ApplyOperation(ctx context.Context, operationReq *op
 		return nil, nil, nil, status.Error(codes.Internal, err.Error())
 	}
 
+	if userBalance == nil {
+		return nil, nil, nil, status.Error(codes.NotFound, UserBalanceNotFound)
+	}
+
 	operationStrategy := operationsstrategies.NewOperationStrategy(operationReq.GetOperationType(), userBalance.CurrentBalance, operationReq.Args...)
-	err = operationStrategy.Apply()
+	err = operationStrategy.Apply(ctx)
 	if err != nil {
-		return nil, nil, nil, status.Error(codes.Internal, err.Error())
+		return nil, nil, nil, status.Error(codes.InvalidArgument, err.Error())
 	}
 
 	args, err := operationStrategy.GetArgsAsJson()
@@ -31,11 +35,7 @@ func (u *OperationsApiImpl) ApplyOperation(ctx context.Context, operationReq *op
 		return nil, nil, nil, status.Error(codes.Internal, err.Error())
 	}
 
-	result, err := operationStrategy.GetResultAsJson()
-
-	if err != nil {
-		return nil, nil, nil, status.Error(codes.Internal, err.Error())
-	}
+	result := operationStrategy.GetResult()
 
 	operationCost := operationStrategy.GetCost()
 	currentUserBalance := operationStrategy.GetResultantUserBalance()
@@ -85,7 +85,7 @@ func (u *OperationsApiImpl) insertOperationModel(ctx context.Context, operationR
 	return operationModel, nil
 }
 
-func (u *OperationsApiImpl) insertRecordModel(ctx context.Context, operationReq *operationspb.ApplyOperationRequest, operationModel *models.Operation, now time.Time, userBalance float64, result []byte, tx *gorm.DB) (*models.Record, error) {
+func (u *OperationsApiImpl) insertRecordModel(ctx context.Context, operationReq *operationspb.ApplyOperationRequest, operationModel *models.Operation, now time.Time, userBalance float64, result string, tx *gorm.DB) (*models.Record, error) {
 	recordModel := models.NewRecord().SetCreatedAt(now).
 		SetUpdatedAt(now).
 		SetOperationID(operationModel.ID).

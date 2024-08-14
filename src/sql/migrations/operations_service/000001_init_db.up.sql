@@ -18,8 +18,7 @@ CREATE TABLE public.operations (
      cost float(53) NOT NULL ,
      operation_type VARCHAR(64) NOT NULL,
      args JSONB,
-     CONSTRAINT operations_pkey PRIMARY KEY (id),
-     CONSTRAINT operations_user_ID_key UNIQUE (user_id)
+     CONSTRAINT operations_pkey PRIMARY KEY (id)
 );
 
 CREATE INDEX idx_operations_user_id ON public.operations USING btree (user_id);
@@ -32,10 +31,9 @@ CREATE TABLE public.records (
     user_id bigint NOT NULL,
     user_balance float(53) NOT NULL ,
     deleted bool NOT NULL ,
-    operation_response JSONB NOT NULL ,
+    operation_response text NOT NULL ,
     CONSTRAINT records_pkey PRIMARY KEY (id),
-    CONSTRAINT fk_records_operations FOREIGN KEY (operation_id) REFERENCES public.operations(id),
-    CONSTRAINT records_user_id_key UNIQUE (user_id)
+    CONSTRAINT fk_records_operations FOREIGN KEY (operation_id) REFERENCES public.operations(id)
 );
 
 CREATE INDEX idx_records_user_id ON public.records USING btree (user_id);

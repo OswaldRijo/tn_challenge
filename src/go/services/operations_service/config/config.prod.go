@@ -63,9 +63,9 @@ func loadProd() {
 	Config.RunMigrations = runMigrations == "true"
 	Config.DefaultUserBalance = defaultUserBalance
 	Config.AdditionOperationCost = additionOperationCost
-	Config.SquareRootOperationCost = squareRootOperationCost
 	Config.DivisionOperationCost = divisionOperationCost
 	Config.MultiplicationOperationCost = multiplicationOperationCost
 	Config.RandomStringOperationCost = randomStringOperationCost
 	Config.SquareRootOperationCost = squareRootOperationCost
+	Config.SubtractionOperationCost = subtractionOperationCost
 }

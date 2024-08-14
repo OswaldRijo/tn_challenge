@@ -18,17 +18,19 @@ func ParseBalanceModelToPb(balance *models.Balance) *operationspb.Balance {
 }
 
 func ParseRecordModelToPb(record *models.Record) *operationspb.Record {
-	return &operationspb.Record{
+	r := &operationspb.Record{
 		Id:                record.ID,
 		OperationId:       record.OperationID,
-		Amount:            record.Amount,
 		UserBalance:       record.UserBalance,
 		Deleted:           record.Deleted,
-		OperationResponse: record.OperationResponse,
-		Operation:         ParseOperationModelToPb(record.Operation),
+		OperationResponse: string(record.OperationResponse),
 		CreatedAt:         timestamppb.New(record.CreatedAt),
 		UpdatedAt:         timestamppb.New(record.UpdatedAt),
 	}
+	if record.Operation != nil {
+		r.Operation = ParseOperationModelToPb(record.Operation)
+	}
+	return r
 }
 
 func ParseRecordModelArrToPb(records []*models.Record) []*operationspb.Record {
@@ -45,6 +47,6 @@ func ParseOperationModelToPb(operation *models.Operation) *operationspb.Operatio
 		UserId:        operation.UserID,
 		OperationType: operation.OperationType.ToPb(),
 		Cost:          operation.Cost,
-		Args:          operation.Args,
+		Args:          string(operation.Args),
 	}
 }

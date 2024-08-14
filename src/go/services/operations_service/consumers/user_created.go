@@ -2,6 +2,7 @@ package consumers
 
 import (
 	"context"
+	"strconv"
 
 	"truenorth/packages/logger"
 	opapi "truenorth/services/operations_service/api/operations"
@@ -9,7 +10,7 @@ import (
 
 func UserCreatedController(ctx context.Context, message map[string]any) error {
 	opApi := opapi.NewOperationsApi()
-	userId := message["userid"].(int64)
+	userId, _ := strconv.ParseInt(message["user_id"].(string), 10, 64)
 	_, err := opApi.CreateUserBalance(ctx, userId)
 	if err != nil {
 		logger.GetLogger().Errorf(ctx, "UserCreatedController error")

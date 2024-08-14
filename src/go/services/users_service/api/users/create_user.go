@@ -2,6 +2,7 @@ package users
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"google.golang.org/grpc/codes"
@@ -45,7 +46,7 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 		}
 
 		messageMap := make(map[string]interface{})
-		messageMap["user_id"] = user.ID
+		messageMap["user_id"] = fmt.Sprintf("%v", user.ID)
 
 		producer := publisher.NewProducer(config.Config.UserCreatedTopicArn)
 

@@ -1,25 +1,26 @@
 package operations_strategies
 
+import (
+	"context"
+
+	"truenorth/services/operations_service/config"
+)
+
 type SubtractionOperationStrategy struct {
 	*OperationStrategyImpl
 	result float64
 	args   []float64
 }
 
-func (aos *SubtractionOperationStrategy) setArgs(args ...float64) *SubtractionOperationStrategy {
-	aos.args = args
-	return aos
-}
-
-func (aos *SubtractionOperationStrategy) GetResultAsJson() ([]byte, error) {
-	return serializeResultAsJson(aos.result)
+func (aos *SubtractionOperationStrategy) GetResult() string {
+	return parseResultToString(aos.result)
 }
 
 func (aos *SubtractionOperationStrategy) GetArgsAsJson() ([]byte, error) {
-	return serializeArgsAsJson(aos.args)
+	return serializeArgsAsJson(aos.args...)
 }
 
-func (aos *SubtractionOperationStrategy) Apply() error {
+func (aos *SubtractionOperationStrategy) Apply(ctx context.Context) error {
 	aos.result = 0
 	for i, arg := range aos.args {
 		if i == 0 {
@@ -32,14 +33,14 @@ func (aos *SubtractionOperationStrategy) Apply() error {
 	return nil
 }
 
-func NewSubtractionOperationStrategy() *SubtractionOperationStrategy {
+func NewSubtractionOperationStrategy(args ...float64) *SubtractionOperationStrategy {
 	return &SubtractionOperationStrategy{
 		OperationStrategyImpl: &OperationStrategyImpl{
-			cost:                      100,
+			cost:                      config.Config.SubtractionOperationCost,
 			userBalance:               0,
 			userBalanceAfterOperation: 0,
 		},
 		result: float64(0),
-		args:   []float64{},
+		args:   args,
 	}
 }

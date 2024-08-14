@@ -1,3 +1,4 @@
+import { extractRpcErrorMessage } from '@/utils/rpc-errors';
 import {
   Body,
   Controller,
@@ -52,11 +53,10 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException({
         code: 'UNAUTHORIZED',
-        message: e.message,
+        message: extractRpcErrorMessage(e),
       });
     }
   }
-
 
   @HttpCode(HttpStatus.OK)
   @Post('logout')

@@ -10,9 +10,9 @@ enum OperationType {
     ADDITION = 0;
     SUBTRACTION = 1;
     MULTIPLICATION = 2;
-    DIVISION = 4;
-    SQUARE_ROOT = 5;
-    RANDOM_STRING = 6;
+    DIVISION = 3;
+    SQUARE_ROOT = 4;
+    RANDOM_STRING = 5;
 }
 
 message Balance {
@@ -28,7 +28,7 @@ message Operation {
   int64 user_id = 2;
   OperationType operation_type = 3;
   double cost = 4;
-  bytes args = 5;
+  string args = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
@@ -36,10 +36,9 @@ message Operation {
 message Record {
   int64 id = 1;
   int64 operation_id = 2;
-  double amount = 3;
   double user_balance = 4;
   bool deleted = 5;
-  bytes operation_response = 6;
+  string operation_response = 6;
   google.protobuf.Timestamp created_at = 7;
   google.protobuf.Timestamp updated_at = 8;
   Operation operation = 9;

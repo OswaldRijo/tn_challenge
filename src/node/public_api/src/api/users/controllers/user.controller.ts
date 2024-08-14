@@ -1,6 +1,13 @@
-import {CreateUserResponse, GetUserRequest, GetUserResponse, CreateUserRequest } from "@/pb";
 import {
-  BadRequestException, Body,
+  CreateUserResponse,
+  GetUserRequest,
+  GetUserResponse,
+  CreateUserRequest,
+} from '@/pb';
+import { extractRpcErrorMessage } from '@/utils/rpc-errors';
+import {
+  BadRequestException,
+  Body,
   Controller,
   Get,
   HttpCode,
@@ -36,7 +43,7 @@ export class UserController {
     @Param() params: GetUserRequest,
     @Req() req,
   ): Promise<GetUserResponse> {
-    if (!req.usern || req.user.id !== params.id ) {
+    if (!req.usern || req.user.id !== params.id) {
       throw new UnauthorizedException({
         code: 'UNAUTHORIZED',
         message: 'api.unauthorized',
@@ -49,14 +56,13 @@ export class UserController {
     } catch (e) {
       throw new BadRequestException({
         code: 'BAD_REQUEST',
-        message: e.message,
+        message: extractRpcErrorMessage(e),
       });
     }
   }
 
-  @Get('sign-up')
+  @Post('sign-up')
   @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
   async createUser(
     @Body() body: CreateUserRequest,
   ): Promise<CreateUserResponse> {
@@ -66,7 +72,7 @@ export class UserController {
     } catch (e) {
       throw new BadRequestException({
         code: 'BAD_REQUEST',
-        message: e.message,
+        message: extractRpcErrorMessage(e),
       });
     }
   }

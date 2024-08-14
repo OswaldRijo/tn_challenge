@@ -2,17 +2,21 @@ package operations_strategies
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
+
+	"golang.org/x/net/context"
 
 	operationspb "truenorth/pb/operations"
 )
 
 type OperationStrategy interface {
-	Apply() error
+	Apply(ctx context.Context) error
 	GetArgsAsJson() ([]byte, error)
-	GetResultAsJson() ([]byte, error)
+	GetResult() string
 	GetResultantUserBalance() float64
 	GetCost() float64
+	setUserBalance(balance float64)
 }
 
 type OperationStrategyImpl struct {
@@ -37,15 +41,8 @@ func (osi *OperationStrategyImpl) GetCost() float64 {
 	return osi.cost
 }
 
-func serializeResultAsJson[T any](result T) ([]byte, error) {
-	data := map[string]T{"result": result}
-
-	jsonData, err := json.Marshal(data)
-	if err != nil {
-		log.Printf("Error serializing result as JSON: %v", err)
-		return nil, err
-	}
-	return jsonData, nil
+func parseResultToString[T any](result T) string {
+	return fmt.Sprintf("%v", result)
 }
 
 func serializeArgsAsJson[T any](args ...T) ([]byte, error) {
@@ -60,26 +57,27 @@ func serializeArgsAsJson[T any](args ...T) ([]byte, error) {
 }
 
 func NewOperationStrategy(opType operationspb.OperationType, userBalance float64, args ...float64) OperationStrategy {
+	var strategy OperationStrategy
 	switch opType {
 	case operationspb.OperationType_SUBTRACTION:
-		strategy := NewSubtractionOperationStrategy().setArgs(args...)
-		strategy.setUserBalance(userBalance)
-		return strategy
+		strategy = NewSubtractionOperationStrategy(args...)
+		break
 	case operationspb.OperationType_MULTIPLICATION:
-		strategy := NewMultiplicationOperationStrategy().setArgs(args...)
-		strategy.setUserBalance(userBalance)
-		return strategy
+		strategy = NewMultiplicationOperationStrategy(args...)
+		break
 	case operationspb.OperationType_DIVISION:
-		strategy := NewDivisionOperationStrategy().setArgs(args...)
-		strategy.setUserBalance(userBalance)
-		return strategy
+		strategy = NewDivisionOperationStrategy(args...)
+		break
 	case operationspb.OperationType_RANDOM_STRING:
-		strategy := NewRandStringOperationStrategy()
-		strategy.setUserBalance(userBalance)
-		return strategy
+		strategy = NewRandStringOperationStrategy()
+		break
+	case operationspb.OperationType_SQUARE_ROOT:
+		strategy = NewSquareRootOperationStrategy(args...)
+		break
 	default:
-		strategy := NewMultiplicationOperationStrategy().setArgs(args...)
-		strategy.setUserBalance(userBalance)
-		return strategy
+		strategy = NewAdditionOperationStrategy(args...)
+		break
 	}
+	strategy.setUserBalance(userBalance)
+	return strategy
 }

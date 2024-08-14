@@ -17,6 +17,7 @@ type configuration struct {
 	RunMigrations               bool
 	DefaultUserBalance          float64
 	AdditionOperationCost       float64
+	SubtractionOperationCost    float64
 	DivisionOperationCost       float64
 	MultiplicationOperationCost float64
 	RandomStringOperationCost   float64

@@ -10,12 +10,11 @@ type Record struct {
 	UpdatedAt         time.Time
 	OperationID       int64 `gorm:"index"`
 	UserID            int64 `gorm:"index"`
-	Amount            float64
 	UserBalance       float64
 	Deleted           bool
-	OperationResponse []byte
+	OperationResponse string
 
-	Operation *Operation `gorm:"references:OperationID"`
+	Operation *Operation
 }
 
 func (r *Record) SetCreatedAt(createdAt time.Time) *Record {
@@ -38,11 +37,6 @@ func (r *Record) SetUserID(userID int64) *Record {
 	return r
 }
 
-func (r *Record) SetAmount(amount float64) *Record {
-	r.Amount = amount
-	return r
-}
-
 func (r *Record) SetUserBalance(userBalance float64) *Record {
 	r.UserBalance = userBalance
 	return r
@@ -53,7 +47,7 @@ func (r *Record) SetDeleted(deleted bool) *Record {
 	return r
 }
 
-func (r *Record) SetOperationResponse(operationResponse []byte) *Record {
+func (r *Record) SetOperationResponse(operationResponse string) *Record {
 	r.OperationResponse = operationResponse
 	return r
 }

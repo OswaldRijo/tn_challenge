@@ -39,5 +39,9 @@ func (u *OperationsApiImpl) CreateUserBalance(ctx context.Context, userId int64)
 		return nil
 	})
 
+	if err != nil {
+		return nil, err
+	}
+
 	return ParseBalanceModelToPb(userBalance), nil
 }

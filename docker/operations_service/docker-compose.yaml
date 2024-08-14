@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  users_service:
+  operations_service:
     build:
       context: ../../.
       dockerfile: docker/operations_service/Dockerfile

@@ -1,67 +1,75 @@
+/**
+ * v0 by Vercel.
+ * @see https://v0.dev/t/IL82z8XC22T
+ * Documentation: https://v0.dev/docs#integrating-generated-code-into-your-nextjs-app
+ */
+import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import HomeTwoToneIcon from '@mui/icons-material/HomeTwoTone';
-import { Box, Button, Card, CardContent, CardMedia, Grid, Link, Typography } from '@mui/material';
-import { styled } from '@mui/material/styles';
+import { useLocation, useNavigate } from 'react-router-dom';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import CalculateIcon from '@mui/icons-material/Calculate';
+import ListIcon from '@mui/icons-material/List';
+import { BottomNavigation, BottomNavigationAction, Box, Paper } from '@mui/material';
 
 import { Routes } from '@/config/routes';
+import { logout } from '@/services/auth';
 
-// styles
-const CardMediaWrapper = styled('div')({
-  width: '85vh',
-  margin: '0 auto',
-  position: 'relative'
-});
+interface MainLayoutProps {
+  children: React.ReactNode;
+}
 
-const ErrorWrapper = styled('div')({
-  maxWidth: 350,
-  margin: '0 auto',
-  textAlign: 'center'
-});
+function getInitValue(path: string): number {
+  if (path === Routes.operations) {
+    return 1;
+  }
 
-const ErrorCard = styled(Card)({
-  height: 'auto',
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'center'
-});
+  return 0;
+}
 
-const AccessDeniedPage = () => {
-  const { t } = useTranslation('common');
+function getRouteFromValue(value: number): string {
+  if (value === 1) {
+    return Routes.operations;
+  }
+
+  return Routes.home;
+}
+
+const MainLayout = ({ children }: MainLayoutProps) => {
+  const { t } = useTranslation(['client']);
+  const location = useLocation();
+  const navigate = useNavigate();
+  const initialValue = getInitValue(location.pathname);
+  const [value, setValue] = React.useState<number | null>(initialValue);
+
+  useEffect(() => {
+    navigate(getRouteFromValue(value));
+  }, [value]);
 
   return (
-    <Box title="Error 500">
-      <ErrorCard>
-        <CardContent>
-          <Grid container justifyContent="center">
-            <Grid item xs={12}>
-              <CardMediaWrapper>
-                <CardMedia component="img" title="Slider5 image" />
-              </CardMediaWrapper>
-            </Grid>
-            <Grid item xs={12} justifyItems={'center'}>
-              <ErrorWrapper>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} justifyItems={'center'}>
-                    <Typography variant="h1" component="div">
-                      {t('text-access-denied')}
-                    </Typography>
-                  </Grid>
-                  <Grid item xs={12} justifyItems={'center'}>
-                    <Typography variant="body2">{t('text-access-denied-message')}</Typography>
-                  </Grid>
-                  <Grid item xs={12} justifyItems={'center'}>
-                    <Button variant="contained" size="large" component={Link} href={Routes.home}>
-                      <HomeTwoToneIcon sx={{ fontSize: '1.3rem', mr: 0.75 }} /> {t('text-return-home')}
-                    </Button>
-                  </Grid>
-                </Grid>
-              </ErrorWrapper>
-            </Grid>
-          </Grid>
-        </CardContent>
-      </ErrorCard>
+    <Box>
+      <Box sx={{ width: '100%', height: '100%', pt: 5 }} display="flex" justifyContent="center" alignItems="center">
+        {children}
+      </Box>
+
+      <Paper sx={{ position: 'fixed', bottom: 0, left: 0, right: 0 }} elevation={3}>
+        <BottomNavigation
+          showLabels
+          value={value}
+          onChange={(event, newValue) => {
+            if (newValue < 2) {
+              setValue(newValue);
+            } else {
+              logout().then(() => navigate(Routes.login));
+            }
+          }}
+        >
+          <BottomNavigationAction label={t('home.label')} icon={<CalculateIcon />} />
+          <BottomNavigationAction label={t('operations.label')} icon={<ListIcon />} />
+          <BottomNavigationAction label={t('logout.label')} icon={<AccountCircleIcon />} />
+        </BottomNavigation>
+      </Paper>
     </Box>
   );
 };
 
-export default AccessDeniedPage;
+export default MainLayout;

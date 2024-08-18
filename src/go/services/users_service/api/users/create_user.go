@@ -9,12 +9,13 @@ import (
 
 	"truenorth/packages/common"
 	"truenorth/packages/database"
-	"truenorth/packages/pubsub/publisher"
 	"truenorth/packages/utils"
 	usersservicepb "truenorth/pb/users"
 	"truenorth/services/users_service/config"
 	"truenorth/services/users_service/models"
 )
+
+var InitTransaction = database.PerformDbTransaction
 
 func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservicepb.CreateUserRequest) (*usersservicepb.User, error) {
 	user, err := u.usersRepository.GetUser(ctx, map[string]interface{}{"username": userRequest.GetUsername()})
@@ -38,7 +39,7 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 		UpdatedAt: time.Now(),
 	}
 
-	err = database.PerformDbTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
+	err = InitTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
 		err = u.usersRepository.CreateUser(ctx, user, tx)
 		if err != nil {
 			return common.NewAPIErrorInternal(err)
@@ -47,9 +48,7 @@ func (u *UsersApiImpl) CreateUser(ctx context.Context, userRequest *usersservice
 		messageMap := make(map[string]interface{})
 		messageMap["user_id"] = fmt.Sprintf("%v", user.ID)
 
-		producer := publisher.NewProducer(config.Config.UserCreatedTopicArn)
-
-		err = producer.SendMessage(ctx, messageMap)
+		err = u.producer.SendMessage(ctx, messageMap)
 		if err != nil {
 			return common.NewAPIErrorInternal(err)
 		}

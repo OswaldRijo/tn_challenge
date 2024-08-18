@@ -1,7 +1,7 @@
 UNAME = $(shell uname -s)
 LOWER_UNAME = $(shell echo $(UNAME) | tr A-Z a-z)
 PROTO_DIR_GEN_GO = src/go/pb
-PROTO_DIR_GEN_NODE = src/node/pb
+PROTO_DIR_GEN_NODE = src/javascript/pb
 
 
 ifeq ($(OS), Windows_NT)
@@ -74,7 +74,7 @@ clean_protos:
 
 protos: protos_go protos_npm
 
-protos_go: clean_protos buf run_pb_mocks run_go_generate run_go_fmt
+protos_go: clean_protos buf run_go_generate run_go_fmt
 
 protos_npm: buf_node node_generate_index pb_link_dir
 
@@ -86,10 +86,10 @@ buf_node:
 	@echo "Command ran successfully";
 
 pb_link_dir:
-	rm -rf src/node/public_api/src/pb
-	cp -r ${PROTO_DIR_GEN_NODE}/src src/node/public_api/src/pb
+	rm -rf src/javascript/public_api/src/pb
+	cp -r ${PROTO_DIR_GEN_NODE}/src src/javascript/public_api/src/pb
 	@echo "Command ran successfully";
 
 node_generate_index:
-	pnpm run --prefix src/node/pb generate-index
+	pnpm run --prefix src/javascript/pb generate-index
 	@echo "Index.ts created successfully";

@@ -10,6 +10,8 @@ import (
 	"truenorth/services/users_service/config"
 )
 
+var HashString = utils.HashString
+
 func (u *UsersApiImpl) CheckCredentials(ctx context.Context, userRequest *usersservicepb.CheckUserCredentialsRequest) (*usersservicepb.User, error) {
 	user, err := u.usersRepository.GetUser(ctx, map[string]interface{}{"username": userRequest.GetUsername()})
 
@@ -21,7 +23,7 @@ func (u *UsersApiImpl) CheckCredentials(ctx context.Context, userRequest *userss
 		return nil, common.NewAPIErrorInvalidArgument(fmt.Errorf(InvalidCredentials))
 	}
 
-	passHashed, err := utils.HashString(userRequest.GetPassword(), config.Config.Salt)
+	passHashed, err := HashString(userRequest.GetPassword(), config.Config.Salt)
 	if err != nil {
 		return nil, common.NewAPIErrorInternal(err)
 	}

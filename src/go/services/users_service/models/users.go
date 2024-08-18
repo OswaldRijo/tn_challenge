@@ -12,7 +12,7 @@ const (
 	StatusInactive
 )
 
-var statusIntToNameMap = map[StatusEnum]string{
+var StatusIntToNameMap = map[StatusEnum]string{
 	StatusActive:   "ACTIVE",
 	StatusInactive: "INACTIVE",
 }
@@ -27,7 +27,7 @@ func (u StatusEnum) Scan(value interface{}) error {
 }
 
 func (u StatusEnum) Value() (driver.Value, error) {
-	statusName := statusIntToNameMap[u]
+	statusName := StatusIntToNameMap[u]
 	return statusName, nil
 }
 

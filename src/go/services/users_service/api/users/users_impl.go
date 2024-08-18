@@ -3,7 +3,9 @@ package users
 import (
 	"context"
 
+	"truenorth/packages/pubsub/publisher"
 	usersservicepb "truenorth/pb/users"
+	"truenorth/services/users_service/config"
 	usersrepo "truenorth/services/users_service/repositories/users"
 )
 
@@ -18,6 +20,7 @@ type UserApi interface {
 
 type UsersApiImpl struct {
 	usersRepository usersrepo.UsersRepo
+	producer        publisher.Producer
 }
 
 func (u *UsersApiImpl) GetUser(ctx context.Context, id int64) (*usersservicepb.User, error) {
@@ -33,5 +36,6 @@ func (u *UsersApiImpl) UpdateUser(ctx context.Context, user *usersservicepb.User
 func NewUsersApi() UserApi {
 	return &UsersApiImpl{
 		usersRepository: usersrepo.NewUsersRepo(),
+		producer:        publisher.NewProducer(config.Config.UserCreatedTopicArn),
 	}
 }

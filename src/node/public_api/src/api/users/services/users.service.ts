@@ -1,6 +1,6 @@
-import {CreateUserRequest, User, UserServiceClient} from "@/pb";
+import { CreateUserRequest, User, UserServiceClient } from '@/pb';
+import { ChannelCredentials } from '@grpc/grpc-js';
 import { Injectable } from '@nestjs/common';
-import { getUsersServiceTransport } from '@/rpc_clients/grpc-transport';
 import { validateNonNull } from '@/utils/validate-non-null';
 import { isErrorNotFound } from '@/rpc_clients/responses';
 import { v4 as uuidv4 } from 'uuid';
@@ -8,13 +8,12 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class UsersService extends UserServiceClient {
   constructor() {
-    const transport = getUsersServiceTransport();
-    super(transport);
+    super(process.env.USERS_SERVICE_PATH, ChannelCredentials.createInsecure());
   }
 
   async create(user): Promise<User> {
     try {
-      const createUserRequest = CreateUserRequest.create({
+      const createUserRequest = CreateUserRequest.fromObject({
         ...user,
         password: uuidv4().toString(),
       });
@@ -24,7 +23,7 @@ export class UsersService extends UserServiceClient {
       validateNonNull(response.user.id, 'user.id');
       validateNonNull(response.user.username, 'user.username');
 
-      return response.user
+      return response.user;
     } catch (error) {
       throw error;
     }
@@ -32,17 +31,16 @@ export class UsersService extends UserServiceClient {
 
   async getByUsername(username: string): Promise<User> {
     try {
-      const { response } = await this.getUserByUsername({username});
+      const { response } = await this.getUserByUsername({ username });
 
       validateNonNull(response.user, 'user');
       validateNonNull(response.user.id, 'user.id');
       validateNonNull(response.user.username, 'user.email');
 
-      return response.user
+      return response.user;
     } catch (error) {
       if (isErrorNotFound(error)) return null;
       throw error;
     }
   }
-
 }

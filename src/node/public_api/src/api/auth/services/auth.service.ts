@@ -1,3 +1,4 @@
+import { CheckUserCredentialsRequest } from '@/pb';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '@/api/users/services/users.service';
@@ -11,15 +12,17 @@ export class AuthService {
 
   async signIn(username: string, password: string) {
     try {
-      const { response } = await this.usersService.checkUserCredentials({
-        username,
-        password,
-      });
-
+      const response = await this.usersService.CheckUserCredentials(
+        CheckUserCredentialsRequest.fromObject({
+          username,
+          password,
+        }),
+      );
+      const res = response.toObject();
       const payload = {
-        userId: response.user.id,
-        username: response.user.username,
-        status: response.user.status,
+        userId: res.user.id,
+        username: res.user.username,
+        status: res.user.status,
       };
       const refreshTokenPayload = {};
       const [accessToken, refreshToken] = await Promise.all([

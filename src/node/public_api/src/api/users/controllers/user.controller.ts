@@ -1,17 +1,10 @@
-import {
-  CreateUserResponse,
-  GetUserRequest,
-  GetUserResponse,
-  CreateUserRequest,
-} from '@/pb';
+import { CreateUserResponse, CreateUserRequest } from '@/pb';
 import { throwErrorBasedOnType } from '@/utils/rpc-errors';
 import {
   Body,
   Controller,
-  Get,
   HttpCode,
   HttpStatus,
-  Param,
   Post,
   Req,
   UnauthorizedException,
@@ -35,36 +28,14 @@ export class UserController {
     return req.user;
   }
 
-  @Get(':id')
-  @HttpCode(HttpStatus.OK)
-  @UseGuards(AuthGuard)
-  async getUser(
-    @Param() params: GetUserRequest,
-    @Req() req,
-  ): Promise<GetUserResponse> {
-    if (!req.usern || req.user.id !== params.id) {
-      throw new UnauthorizedException({
-        code: 'UNAUTHORIZED',
-        message: 'api.unauthorized',
-      });
-    }
-
-    try {
-      const { response } = await this.usersService.getUser({ id: params.id });
-      return response;
-    } catch (e) {
-      throwErrorBasedOnType(e);
-    }
-  }
-
   @Post('sign-up')
   @HttpCode(HttpStatus.OK)
-  async createUser(
-    @Body() body: CreateUserRequest,
-  ): Promise<CreateUserResponse> {
+  async createUser(@Body() body: CreateUserRequest): Promise<object> {
     try {
-      const { response } = await this.usersService.createUser(body);
-      return response;
+      const response = await this.usersService.CreateUser(
+        CreateUserRequest.fromObject(body),
+      );
+      return response.toObject();
     } catch (e) {
       throwErrorBasedOnType(e);
     }

@@ -1,4 +1,3 @@
-import { extractRpcErrorMessage } from '@/utils/rpc-errors';
 import {
   Body,
   Controller,
@@ -53,7 +52,7 @@ export class AuthController {
     } catch (e) {
       throw new UnauthorizedException({
         code: 'UNAUTHORIZED',
-        message: extractRpcErrorMessage(e),
+        message: e.message,
       });
     }
   }

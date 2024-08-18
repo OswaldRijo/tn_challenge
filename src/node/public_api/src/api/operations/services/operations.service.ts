@@ -1,11 +1,13 @@
 import { OperationsServiceClient } from '@/pb';
-import { getOperationsServiceTransport } from '@/rpc_clients/grpc-transport';
+import { ChannelCredentials } from '@grpc/grpc-js';
 import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class OperationsService extends OperationsServiceClient {
   constructor() {
-    const transport = getOperationsServiceTransport();
-    super(transport);
+    super(
+      process.env.OPERATIONS_SERVICE_PATH,
+      ChannelCredentials.createInsecure(),
+    );
   }
 }

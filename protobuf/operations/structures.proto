@@ -17,29 +17,29 @@ enum OperationType {
 
 message Balance {
   int64 id = 1;
-  int64 user_id = 2;
-  double current_balance = 3;
-  google.protobuf.Timestamp created_at = 4;
-  google.protobuf.Timestamp updated_at = 5;
+  int64 userId = 2;
+  double currentBalance = 3;
+  google.protobuf.Timestamp createdAt = 4;
+  google.protobuf.Timestamp updatedAt = 5;
 }
 
 message Operation {
   int64 id = 1;
-  int64 user_id = 2;
-  OperationType operation_type = 3;
+  int64 userId = 2;
+  OperationType operationType = 3;
   double cost = 4;
   string args = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  google.protobuf.Timestamp createdAt = 6;
+  google.protobuf.Timestamp updatedAt = 7;
 }
 
 message Record {
   int64 id = 1;
-  int64 operation_id = 2;
-  double user_balance = 4;
+  int64 operationId = 2;
+  double userBalance = 4;
   bool deleted = 5;
-  string operation_response = 6;
-  google.protobuf.Timestamp created_at = 7;
-  google.protobuf.Timestamp updated_at = 8;
+  string operationResponse = 6;
+  google.protobuf.Timestamp createdAt = 7;
+  google.protobuf.Timestamp updatedAt = 8;
   Operation operation = 9;
 }

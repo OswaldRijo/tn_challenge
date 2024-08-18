@@ -15,7 +15,7 @@ enum UserStatus {
 message User {
   int64 id = 1;
   string username = 2;
-  google.protobuf.Timestamp created_at = 3;
-  google.protobuf.Timestamp updated_at = 4;
+  google.protobuf.Timestamp createdAt = 3;
+  google.protobuf.Timestamp updatedAt = 4;
   UserStatus status = 5;
 }

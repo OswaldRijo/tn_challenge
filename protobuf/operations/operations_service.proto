@@ -10,17 +10,17 @@ import "google/protobuf/timestamp.proto";
 message ApplyOperationRequest {
   OperationType operationType = 1;
   repeated double args = 2;
-  int64 user_id = 3;
+  int64 userId = 3;
 }
 
 message ApplyOperationResponse {
   Record record = 1;
   Operation operation = 2;
-  Balance current_user_balance = 3;
+  Balance currentUserBalance = 3;
 }
 
 message GetUserBalanceRequest {
-  int64 user_id = 1;
+  int64 userId = 1;
 }
 
 message GetUserBalanceResponse {
@@ -28,22 +28,24 @@ message GetUserBalanceResponse {
 }
 
 message FilterRecordsRequest {
-  optional double balance = 1;
-  optional string limit = 2;
-  optional bool page = 3;
+  optional int64 userId = 1;
+  optional int32 limit = 2;
+  optional int32 page = 3;
 }
 
 message FilterRecordsResponse {
   repeated Record records = 1;
+  int64 totalCount = 2;
 }
 
 message DeleteRecordsRequest {
-  repeated int64 record_ids = 1;
-  int64 user_id = 2;
+  repeated int64 recordIds = 1;
+  int64 userId = 2;
 }
 
 message DeleteRecordsResponse {
   repeated Record records = 1;
+  Balance currentBalance = 2;
 }
 
 service OperationsService {

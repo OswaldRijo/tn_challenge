@@ -31,3 +31,4 @@ export $(grep -v '^#' ./.properties | xargs)
 docker-compose -f docker/operations_service/docker-compose.yaml up -d
 docker-compose -f docker/users_service/docker-compose.yaml up -d
 docker-compose -f docker/public_api/docker-compose.yaml up -d
+docker-compose -f docker/web_client/docker-compose.yaml up -d

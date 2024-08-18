@@ -30,9 +30,8 @@ func (mos *MultiplicationOperationStrategy) Apply(ctx context.Context) error {
 	for _, arg := range mos.args {
 		mos.result *= arg
 	}
-	mos.deductCostFromUserBalance()
 
-	return nil
+	return mos.deductCostFromUserBalance()
 }
 
 func NewMultiplicationOperationStrategy(args ...float64) *MultiplicationOperationStrategy {

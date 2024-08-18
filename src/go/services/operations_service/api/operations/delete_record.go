@@ -8,7 +8,6 @@ import (
 	"gorm.io/gorm"
 
 	"truenorth/packages/common"
-	"truenorth/packages/database"
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/models"
 )
@@ -20,7 +19,6 @@ func (u *OperationsApiImpl) DeleteRecord(ctx context.Context, deleteRecordReq *o
 			return nil, nil, common.NewAPIErrorResourceNotFound(err)
 		}
 		return nil, nil, common.NewAPIErrorInternal(err)
-
 	}
 
 	userBalance, err := u.balancesRepo.GetBalanceByUserId(ctx, deleteRecordReq.GetUserId())
@@ -35,7 +33,7 @@ func (u *OperationsApiImpl) DeleteRecord(ctx context.Context, deleteRecordReq *o
 
 	userBalance.CurrentBalance += u.getTotalBalanceToRefund(records)
 
-	err = database.PerformDbTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
+	err = InitTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
 		for _, r := range records {
 			err = u.recordsRepo.DeleteRecordById(ctx, r.ID, tx)
 			if err != nil {

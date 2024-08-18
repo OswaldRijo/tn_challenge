@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/pkg/errors"
 	"golang.org/x/net/context"
 
 	operationspb "truenorth/pb/operations"
@@ -29,8 +30,13 @@ func (osi *OperationStrategyImpl) setUserBalance(userBalance float64) {
 	osi.userBalance = userBalance
 }
 
-func (osi *OperationStrategyImpl) deductCostFromUserBalance() {
+func (osi *OperationStrategyImpl) deductCostFromUserBalance() error {
+	if osi.userBalance < osi.cost {
+		return errors.New(UserBalanceIsNotEnough)
+
+	}
 	osi.userBalanceAfterOperation = osi.userBalance - osi.cost
+	return nil
 }
 
 func (osi *OperationStrategyImpl) GetResultantUserBalance() float64 {

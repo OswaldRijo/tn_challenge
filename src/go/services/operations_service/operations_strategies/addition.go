@@ -30,8 +30,7 @@ func (aos *AdditionOperationStrategy) Apply(ctx context.Context) error {
 	for _, arg := range aos.args {
 		aos.result += arg
 	}
-	aos.deductCostFromUserBalance()
-	return nil
+	return aos.deductCostFromUserBalance()
 }
 
 func NewAdditionOperationStrategy(args ...float64) *AdditionOperationStrategy {

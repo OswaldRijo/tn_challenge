@@ -32,8 +32,7 @@ func (rsos *RandStringOperationStrategy) Apply(ctx context.Context) error {
 
 	rsos.result = string(resBody)
 	rsos.result = rsos.result[:len(rsos.result)-2]
-	rsos.deductCostFromUserBalance()
-	return nil
+	return rsos.deductCostFromUserBalance()
 }
 
 func (rsos *RandStringOperationStrategy) GetResult() string {

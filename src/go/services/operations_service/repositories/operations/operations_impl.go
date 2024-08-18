@@ -11,7 +11,6 @@ import (
 
 //go:generate mockery --name=OperationsRepo --output=../../../../mocks/operations_service/repositories
 type OperationsRepo interface {
-	FindRecordsByUserId(ctx context.Context, userId int64, limit, page int) ([]*models.Operation, error)
 	CreateOperation(ctx context.Context, operation *models.Operation, tx *gorm.DB) error
 }
 

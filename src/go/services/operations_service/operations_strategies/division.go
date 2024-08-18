@@ -13,11 +13,6 @@ type DivisionOperationStrategy struct {
 	args   []float64
 }
 
-func (dos *DivisionOperationStrategy) setArgs(args ...float64) *DivisionOperationStrategy {
-	dos.args = args
-	return dos
-}
-
 func (dos *DivisionOperationStrategy) GetResult() string {
 	return parseResultToString(dos.result)
 }
@@ -43,9 +38,8 @@ func (dos *DivisionOperationStrategy) Apply(ctx context.Context) error {
 			dos.result /= arg
 		}
 	}
-	dos.deductCostFromUserBalance()
+	return dos.deductCostFromUserBalance()
 
-	return nil
 }
 
 func NewDivisionOperationStrategy(args ...float64) *DivisionOperationStrategy {

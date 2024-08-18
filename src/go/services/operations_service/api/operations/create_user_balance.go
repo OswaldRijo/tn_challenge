@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 
 	"truenorth/packages/common"
-	"truenorth/packages/database"
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/config"
 	"truenorth/services/operations_service/models"
@@ -23,7 +22,7 @@ func (u *OperationsApiImpl) CreateUserBalance(ctx context.Context, userId int64)
 		return ParseBalanceModelToPb(userBalance), nil
 	}
 
-	err = database.PerformDbTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
+	err = InitTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
 		now := time.Now()
 		userBalance = models.NewBalance().
 			SetCreatedAt(now).

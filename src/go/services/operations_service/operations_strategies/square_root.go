@@ -26,9 +26,12 @@ func (sros *SquareRootOperationStrategy) Apply(ctx context.Context) error {
 	if len(sros.args) != 1 {
 		return errors.New(ArgsLengthMustBeOne)
 	}
+
+	if sros.args[0] < 0 {
+		return errors.New(NegativeNumbersNotAllowed)
+	}
 	sros.result = math.Sqrt(sros.args[0])
-	sros.deductCostFromUserBalance()
-	return nil
+	return sros.deductCostFromUserBalance()
 }
 
 func NewSquareRootOperationStrategy(arg ...float64) *SquareRootOperationStrategy {

@@ -3,6 +3,8 @@ package operations_strategies
 import (
 	"context"
 
+	"github.com/pkg/errors"
+
 	"truenorth/services/operations_service/config"
 )
 
@@ -21,6 +23,10 @@ func (aos *SubtractionOperationStrategy) GetArgsAsJson() ([]byte, error) {
 }
 
 func (aos *SubtractionOperationStrategy) Apply(ctx context.Context) error {
+	if len(aos.args) < 2 {
+		return errors.New(ArgsLengthMustBeBiggerThanOne)
+	}
+
 	aos.result = 0
 	for i, arg := range aos.args {
 		if i == 0 {
@@ -29,8 +35,7 @@ func (aos *SubtractionOperationStrategy) Apply(ctx context.Context) error {
 			aos.result -= arg
 		}
 	}
-	aos.deductCostFromUserBalance()
-	return nil
+	return aos.deductCostFromUserBalance()
 }
 
 func NewSubtractionOperationStrategy(args ...float64) *SubtractionOperationStrategy {

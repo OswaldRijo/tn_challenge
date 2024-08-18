@@ -14,6 +14,8 @@ import (
 	operationsstrategies "truenorth/services/operations_service/operations_strategies"
 )
 
+var InitTransaction = database.PerformDbTransaction
+
 func (u *OperationsApiImpl) ApplyOperation(ctx context.Context, operationReq *operationspb.ApplyOperationRequest) (*operationspb.Operation, *operationspb.Record, *operationspb.Balance, error) {
 	userBalance, err := u.balancesRepo.GetBalanceByUserId(ctx, operationReq.GetUserId())
 	if err != nil {
@@ -41,7 +43,7 @@ func (u *OperationsApiImpl) ApplyOperation(ctx context.Context, operationReq *op
 	currentUserBalance := operationStrategy.GetResultantUserBalance()
 	var operationModel *models.Operation
 	var recordModel *models.Record
-	err = database.PerformDbTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
+	err = InitTransaction(ctx, func(ctx context.Context, tx *gorm.DB) error {
 		now := time.Now()
 		operationModel, err = u.insertOperationModel(ctx, operationReq, now, operationCost, args, tx)
 		if err != nil {

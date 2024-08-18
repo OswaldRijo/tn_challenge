@@ -35,8 +35,9 @@ var statusNameToValueMap = map[string]OperationTypeEnum{
 	"RANDOM_STRING":  OperationTypeRandomString,
 }
 
-func (u OperationTypeEnum) Scan(value interface{}) error {
-	u = statusNameToValueMap[value.(string)]
+func (u *OperationTypeEnum) Scan(value interface{}) error {
+	opEnum := statusNameToValueMap[value.(string)]
+	*u = opEnum
 	return nil
 }
 

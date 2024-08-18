@@ -11,8 +11,10 @@ plugins:
       - generate_dependencies
       - long_type_string
       - optimize_code_size
+      - unary_rpc_promise
+      - no_namespace
 
     # The custom path to the plugin binary, if not protoc-gen-NAME on your $PATH.
     # Assuming you have installed @protobuf-ts/plugin in the working directory:
-    path: ./node_modules/.bin/protoc-gen-ts
+    path: ./node_modules/protoc-gen-ts/node_modules/.bin/protoc-gen-ts
     strategy: all

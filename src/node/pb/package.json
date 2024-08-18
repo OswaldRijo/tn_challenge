@@ -25,7 +25,8 @@
   "dependencies": {
     "@protobuf-ts/plugin": "^2.9.4",
     "@protobuf-ts/runtime": "^2.9.4",
-    "@protobuf-ts/runtime-rpc": "^2.9.4"
+    "@protobuf-ts/runtime-rpc": "^2.9.4",
+    "protoc-gen-ts": "^0.8.7"
   },
   "devDependencies": {
     "ts-protoc-gen": "^0.15.0",

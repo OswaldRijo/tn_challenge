@@ -1,0 +1,23 @@
+version: '3.7'
+
+services:
+  tn_public_api:
+    build:
+      context: ../../.
+      dockerfile: docker/web_client/Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      REACT_APP_BASE_URL: "http://localhost:3000/app"
+      REACT_APP_BACKEND_PATH: "http://localhost:8080/api"
+      PUBLIC_URL: "http://localhost:3000"
+      REACT_APP_PORT: "3000"
+    networks:
+      - default
+      - backend
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+networks:
+  backend:
+    external: true

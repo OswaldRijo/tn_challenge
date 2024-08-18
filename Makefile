@@ -33,10 +33,6 @@ else
 	SERVER_BIN = ${SERVER_DIR}
 endif
 
-run_pb_mocks:
-	./scripts/run-mocks.sh
-	@echo "Mocks created successfully";
-
 run_go_fmt:
 	cd src/go && go fmt;
 

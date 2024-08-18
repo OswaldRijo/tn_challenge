@@ -20,14 +20,13 @@ else
 fi
 
 ./scripts/install-mockery.sh
-sudo ./scripts/install-buf.sh
-sudo ./scripts/run-mocks.sh
+./scripts/install-buf.sh
 
 sudo make protos_go
 sudo make protos_npm
 
-sudo ./scripts/install-docker-compose.sh
-sudo ./scripts/install-psql.sh
+./scripts/install-docker-compose.sh
+./scripts/install-psql.sh
 
 
 AWS_REGION=us-east-2

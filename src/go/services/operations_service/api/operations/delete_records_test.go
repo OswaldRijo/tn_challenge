@@ -11,7 +11,7 @@ import (
 	"truenorth/services/operations_service/api/operations"
 	"truenorth/services/operations_service/config"
 	operationsmodels "truenorth/services/operations_service/models"
-	"truenorth/services/users_service/test"
+	"truenorth/services/operations_service/test"
 )
 
 func (ucts *OperationApiTestSuite) Test_DeleteUser_Success() {

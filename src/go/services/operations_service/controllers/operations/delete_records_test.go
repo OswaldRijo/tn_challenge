@@ -6,7 +6,7 @@ import (
 	"google.golang.org/grpc/status"
 
 	operationspb "truenorth/pb/operations"
-	"truenorth/services/users_service/test"
+	"truenorth/services/operations_service/test"
 )
 
 func (ucts *OperationControllerTestSuite) Test_DeleteRecords_Success() {

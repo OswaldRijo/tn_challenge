@@ -8,7 +8,7 @@ import (
 
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/controllers/operations"
-	"truenorth/services/users_service/test"
+	"truenorth/services/operations_service/test"
 )
 
 func (ucts *OperationControllerTestSuite) Test_ApplyOperation_Success() {

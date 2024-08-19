@@ -7,7 +7,7 @@ import (
 	"github.com/DATA-DOG/go-sqlmock"
 	"gorm.io/gorm"
 
-	testdata "truenorth/services/users_service/test"
+	testdata "truenorth/services/operations_service/test"
 )
 
 func (bri *BalanceRepoTestSuite) Test_GetBalanceByUserId_Success() {

@@ -9,7 +9,7 @@ import (
 
 	operationspb "truenorth/pb/operations"
 	"truenorth/services/operations_service/api/operations"
-	"truenorth/services/users_service/test"
+	"truenorth/services/operations_service/test"
 )
 
 func (ucts *OperationApiTestSuite) Test_ApplyOperation_Success() {

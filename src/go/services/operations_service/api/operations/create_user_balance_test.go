@@ -9,7 +9,7 @@ import (
 
 	"truenorth/services/operations_service/api/operations"
 	"truenorth/services/operations_service/config"
-	"truenorth/services/users_service/test"
+	"truenorth/services/operations_service/test"
 )
 
 func (ucts *OperationApiTestSuite) Test_CreateUserBalance_Success() {

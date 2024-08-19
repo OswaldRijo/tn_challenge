@@ -6,7 +6,7 @@ import (
 
 	"github.com/DATA-DOG/go-sqlmock"
 
-	testdata "truenorth/services/users_service/test"
+	testdata "truenorth/services/operations_service/test"
 )
 
 func (rrt *RecordsRepoTestSuite) Test_FindRecordsByUserId_Success() {

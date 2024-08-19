@@ -9,3 +9,4 @@ docker rmi operations_service_users_service
 docker rmi operations_service_operations_service
 docker rmi users_service_users_service
 docker rmi web_client_tn_public_api
+docker network rm backend postgres_db

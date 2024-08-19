@@ -1,3 +1,15 @@
 {
-  "api.users.already_exists": "User already exists"
+  "users.api.already_exists": "User already exists",
+  "users.api.not_found": "User not found",
+  "users.api.invalid_credentials": "Invalid Credentials",
+  "user.service.missingUsername": "Missing Username",
+  "user.service.missingPassword": "Missing Password",
+  "operations.service.invalid_operation_number": "Invalid operation",
+  "operations.api.args_size_must_be_at_least_two": "Arg size must be 2",
+  "operations.api.args_size_must_be_one": "Arg size must be 1",
+  "operations.api.negative_numbers_not_allowed": "Negative numbers not allowed",
+  "operations.api.args_cant_be_zero": "Arg cant be zero",
+  "operations.api.user_balance_is_not_enough": "Balance is not enough",
+  "operations.api.record_does_not_belong_to_the_user": "Record does not belongs to the user",
+  "operations.api.user_balance_not_found": "User Balance not found"
 }

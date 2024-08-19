@@ -1,5 +1,5 @@
 package users
 
-const UserAlreadyExistsError = "api.users.already_exists"
-const UserNotFoundError = "api.users.not_found"
-const InvalidCredentials = "api.users.invalid_credentials"
+const UserAlreadyExistsError = "users.api.already_exists"
+const UserNotFoundError = "users.api.not_found"
+const InvalidCredentials = "users.api.invalid_credentials"

@@ -1,3 +1,15 @@
 {
-  "api.users.already_exists": "Usuario ya existe"
+  "users.api.already_exists": "Usuario ya existe",
+  "users.api.not_found": "Usuario no encontrado",
+  "users.api.invalid_credentials": "Credenciales Invalidas",
+  "user.service.missingUsername": "Username es requerido",
+  "user.service.missingPassword": "Password es requerida",
+  "operations.service.invalid_operation_number": "Operación invalida",
+  "operations.api.args_size_must_be_at_least_two": "El tamaño de los argumentos es de 2",
+  "operations.api.args_size_must_be_one": "El tamaño de los argumentos es de 1",
+  "operations.api.negative_numbers_not_allowed": "No se permiten numeros negativos",
+  "operations.api.args_cant_be_zero": "Argumento no puede ser cero",
+  "operations.api.user_balance_is_not_enough": "No tiene suficiente balance para realizar esta operación",
+  "operations.api.record_does_not_belong_to_the_user": "Registro no pertenece al usuario",
+  "operations.api.user_balance_not_found": "Balance del usuario no encontrado"
 }

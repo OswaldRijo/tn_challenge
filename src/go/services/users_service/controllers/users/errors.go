@@ -1,4 +1,4 @@
 package users
 
-const MissingUsername = "services.user.missingUsername"
-const MissingPassword = "services.user.missingPassword"
+const MissingUsername = "user.service.missingUsername"
+const MissingPassword = "user.service.missingPassword"

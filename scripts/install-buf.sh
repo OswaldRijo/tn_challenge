@@ -70,9 +70,9 @@ else
 
     if check_buf; then
         echo "Buf correctly installed."
-        export PATH="$PATH:$(go env GOPATH)/bin"
     else
         echo "Error trying to install Buf."
         exit 1
     fi
+    export PATH="$PATH:$(go env GOPATH)/bin"
 fi

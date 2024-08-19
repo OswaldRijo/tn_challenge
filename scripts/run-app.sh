@@ -2,11 +2,12 @@
 
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 COMPOSE=""
-if "$OS" = "linux" then
+if "$OS" = "linux"; then
   COMPOSE="docker compose"
 else
   COMPOSE="docker-compose"
 fi
+
 $COMPOSE -f docker/database/docker-compose.yaml up -d
 sleep 5
 DB_HOST="localhost"

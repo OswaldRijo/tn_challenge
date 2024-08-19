@@ -1,5 +1,8 @@
 #!/bin/sh
 
+docker network create --driver bridge backend
+docker network create --driver bridge postgres_db
+
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 COMPOSE=""
 if [ "$OS" = "linux" ]; then

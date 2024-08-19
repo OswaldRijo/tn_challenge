@@ -1,0 +1,9 @@
+APP:
+  VERSION: 1.0.0
+  NAME: operations_service
+  ECR_REPO: tn-operations-svc
+  MIGRATIONS_DIR: operations_service
+  BUILD_PATH: operations_service
+  ENVS:
+    STAGING:
+      SECRETS: tn_operations_service_secrets

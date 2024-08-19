@@ -1,0 +1,230 @@
+version: 2.1
+
+orbs:
+  aws-ecr: circleci/aws-ecr@8.2.1
+  aws-cli: circleci/aws-cli@3.1.4
+  discord: antonioned/discord@0.1.0
+  go: circleci/go@1.11.0
+
+commands:
+  prepare-envs:
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - run:
+          name: Setting up build
+          command: >
+            . scripts/yaml-to-vars.sh;
+            parse_yaml docker/<< parameters.spec-file >>/spec.yaml "SPEC_" >> "$BASH_ENV";
+            echo export BUILD_PATH=$SPEC_APP_BUILD_PATH;
+            ./scripts/build-image.sh;
+  install-go:
+    steps:
+     - run:
+        name: Install Golang
+        command: |
+          ./scripts/install-go.sh;
+          echo 'export export GOPATH=$HOME/go' >> "$BASH_ENV"          
+          echo 'export PATH=$PATH:/usr/local/go/bin:$GOPATH/bin' >> "$BASH_ENV"
+  check-image-version:
+    steps:
+     - aws-cli/setup
+     - run:
+        name: Check Version tag does not exist
+        command: |
+          ./scripts/check-image-version.sh $SPEC_APP_ECR_REPO $SPEC_APP_VERSION;
+
+  run-unit-test:
+    steps:
+      - run:
+          name: go mod download
+          command: cd src && go mod download
+      - run:
+          name: Setup Environment Variables
+          command: |
+            echo 'export PATH="$GOPATH"/bin:"$PATH"' >> "$BASH_ENV"
+      - run:
+          name: Run buf
+          command: |
+            ./scripts/install-buf.sh;
+            ./scripts/generate-go-buf.sh;
+
+      - run:
+          name: go test
+          command: cd src && go install github.com/vektra/mockery/v2@v2.35.4 && go generate ./... && go test ./$SPEC_APP_BUILD_PATH/...
+            
+
+# the default pipeline parameters, which will be updated according to
+# the results of the path-filtering orb
+parameters:
+  public_api:
+    type: boolean
+    default: false
+  users_service:
+    type: boolean
+    default: false
+  operations_service:
+    type: boolean
+    default: false
+
+jobs:
+  build_and_push_go:
+    executor:
+      name: go/default
+      tag: '1.22'
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - run-unit-test
+      - setup_remote_docker
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./docker
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg TOKEN=$TOKEN --build-arg USER=$USER --build-arg BUILD_PATH=$SPEC_APP_BUILD_PATH --build-arg MIGRATION_PATH=$SPEC_APP_MIGRATIONS_DIR"
+          repo: "$SPEC_APP_ECR_REPO"
+          tag: "latest,$CIRCLE_SHA1,$SPEC_APP_VERSION"
+          push-image: true
+
+  check_build_gp:
+    executor:
+      name: go/default
+      tag: '1.22'
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - run-unit-test
+      - setup_remote_docker
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./docker
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg TOKEN=$TOKEN --build-arg USER=$USER --build-arg BUILD_PATH=$SPEC_APP_BUILD_PATH --build-arg MIGRATION_PATH=$SPEC_APP_MIGRATIONS_DIR"
+          repo: "$SPEC_APP_ECR_REPO"
+          tag: "latest,$CIRCLE_SHA1,$SPEC_APP_VERSION"
+          push-image: true
+
+  build_and_push_npm:
+    docker:
+      - image: cimg/base:current
+    parameters:
+      repo:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - setup_remote_docker
+      - aws-cli/install
+      - run:
+          name: Exporting CODEARTIFACT_AUTH_TOKEN var
+          command: echo 'export CODEARTIFACT_AUTH_TOKEN=`aws codeartifact get-authorization-token --domain satori-cloud --domain-owner $AWS_ACCOUNT_ID --region $AWS_REGION --query authorizationToken --output text`' >> "$BASH_ENV"
+
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: .
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg CODEARTIFACT_AUTH_TOKEN=$CODEARTIFACT_AUTH_TOKEN"
+          repo: << parameters.repo >>
+          tag: "$VERSION,latest,$CIRCLE_SHA1"
+          push-image: true
+
+  check_build_npm:
+    docker:
+      - image: cimg/base:current
+    parameters:
+      spec-file:
+        type: string
+    steps:
+      - checkout
+      - prepare-envs:
+          spec-file: "<< parameters.spec-file >>"
+      - run-unit-test
+      - setup_remote_docker
+      - aws-ecr/build-and-push-image:
+          aws-access-key-id: AWS_ACCESS_KEY_ID
+          aws-secret-access-key: AWS_SECRET_ACCESS_KEY
+          create-repo: false
+          dockerfile: Dockerfile
+          path: ./docker
+          region: us-east-2
+          registry-id: AWS_ACCOUNT_ID
+          extra-build-args: "--build-arg TOKEN=$TOKEN --build-arg USER=$USER --build-arg BUILD_PATH=$SPEC_APP_BUILD_PATH --build-arg MIGRATION_PATH=$SPEC_APP_MIGRATIONS_DIR"
+          repo: "$SPEC_APP_ECR_REPO"
+          tag: "latest,$CIRCLE_SHA1,$SPEC_APP_VERSION"
+          push-image: true
+
+workflows:
+  public_api:
+    when: << pipeline.parameters.public_api >>
+    jobs:
+      - build_and_push:
+          spec-file: public_api
+          context: envs
+          filters:
+            branches:
+              only:
+                - master
+      - check_build:
+          spec-file: public_api
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master
+  users_service:
+    when: << pipeline.parameters.users_service >>
+    jobs:
+      - build_and_push:
+          spec-file: users_service
+          context: envs
+          filters:
+            branches:
+              only:
+                - master
+      - check_build:
+          spec-file: public_api
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master
+
+  operations_service:
+    when: << pipeline.parameters.operations_service >>
+    jobs:
+      - build_and_push:
+          spec-file: operations_service
+          context: envs
+          filters:
+            branches:
+              only:
+                - master
+      - check_build:
+          spec-file: public_api
+          context: envs
+          filters:
+            branches:
+              ignore:
+                - master

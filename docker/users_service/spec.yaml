@@ -1,0 +1,9 @@
+APP:
+  VERSION: 1.0.0
+  NAME: users_service
+  ECR_REPO: tn-users-svc
+  MIGRATIONS_DIR: users_service
+  BUILD_PATH: users_service
+  ENVS:
+    STAGING:
+      SECRETS: tn_users_service_secrets

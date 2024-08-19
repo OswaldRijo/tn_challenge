@@ -1,0 +1,9 @@
+APP:
+  VERSION: 1.0.0
+  NAME: tn_public_api
+  ECR_REPO: tn-public-api-svc
+  MIGRATIONS_DIR: public_api
+  BUILD_PATH: public_api
+  ENVS:
+    STAGING:
+      SECRETS: tn_public_api_secrets

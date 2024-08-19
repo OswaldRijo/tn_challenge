@@ -7,7 +7,7 @@ OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 check_buf() {
   OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
-  if [ "$OS" == "linux" ]; then
+  if [ "$OS" = "linux" ]; then
     return 0
   fi
   if command -v buf &> /dev/null; then

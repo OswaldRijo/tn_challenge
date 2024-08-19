@@ -29,11 +29,12 @@ check_buf() {
 install_buf_linux() {
     echo "Installing Buf for Linux..."
 
-    curl -sSL "https://github.com/bufbuild/buf/releases/download/v$BUF_VERSION/buf-Linux-x86_64.zip" -o "buf.zip"
+    curl -sSL "https://github.com/bufbuild/buf/releases/download/v$BUF_VERSION/buf-Linux-x86_64.tar.gz" -o "buf.tar.gz"
 
-    unzip buf.zip -d /usr/local/bin
+    sudo tar -xzf buf.tar.gz
+    sudo mv buf/bin/buf /usr/local/bin/
 
-    rm buf.zip
+    rm buf.tar.gz
 }
 
 install_buf_macos() {

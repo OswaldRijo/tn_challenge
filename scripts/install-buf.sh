@@ -5,9 +5,9 @@ BUF_VERSION=1.30.1
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
 check_buf() {
-  OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+  n="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
-  if [ "$OS" = "linux" ]; then
+  if [ "$n" = "linux" ]; then
     return 1
   fi
   if command -v buf &> /dev/null; then

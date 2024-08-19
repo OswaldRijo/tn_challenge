@@ -5,10 +5,10 @@ RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
 
-COPY src/node/web_client/.npmrc ./
+COPY src/javascript/web_client/.npmrc ./
 # Install dependencies based on the preferred package manager
-COPY src/node/web_client/package.json ./
-COPY src/node/web_client/pnpm-lock.yaml ./
+COPY src/javascript/web_client/package.json ./
+COPY src/javascript/web_client/pnpm-lock.yaml ./
 RUN npm -g add pnpm && pnpm i  --frozen-lockfile;
 
 
@@ -17,7 +17,7 @@ RUN npm -g add pnpm && pnpm i  --frozen-lockfile;
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY src/node/web_client .
+COPY src/javascript/web_client .
 
 RUN npm -g add pnpm
 RUN pnpm build --no-lint

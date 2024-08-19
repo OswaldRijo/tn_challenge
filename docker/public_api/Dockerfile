@@ -10,10 +10,10 @@ ENV USER=$USER
 RUN apk add --no-cache libc6-compat
 WORKDIR /app
 
-COPY src/node/public_api/.npmrc ./
+COPY src/javascript/public_api/.npmrc ./
 # Install dependencies based on the preferred package manager
-COPY src/node/public_api/package.json ./
-COPY src/node/public_api/pnpm-lock.yaml ./
+COPY src/javascript/public_api/package.json ./
+COPY src/javascript/public_api/pnpm-lock.yaml ./
 RUN npm -g add pnpm && pnpm i --frozen-lockfile;
 
 # Rebuild the source code only when needed
@@ -21,7 +21,7 @@ FROM base AS builder
 
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
-COPY src/node/public_api ./
+COPY src/javascript/public_api ./
 
 # Next.js collects completely anonymous telemetry.ts data about general usage.
 # Learn more here: https://nextjs.org/telemetry

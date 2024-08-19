@@ -8,7 +8,7 @@ check_buf() {
   OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
   if [ "$OS" = "linux" ]; then
-    return 0
+    return 1
   fi
   if command -v buf &> /dev/null; then
      buf_output=$(buf --version 2>&1)

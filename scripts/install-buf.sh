@@ -35,7 +35,7 @@ install_buf_linux() {
     sudo mv buf/bin/buf /usr/local/bin/
 
     rm buf.tar.gz
-    cd src/go && go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1 && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@1.2.0 && cd ../..
+    cd src/go && go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28.1 && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2.0 && cd ../..
 }
 
 install_buf_macos() {

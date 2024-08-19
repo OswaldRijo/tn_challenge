@@ -39,7 +39,7 @@ run_go_fmt:
 run_go_generate:
 	cd src/go && go generate ./...;
 
-buf:
+buf_up:
 	buf generate protobuf
 	@echo "Command ran successfully";
 
@@ -74,7 +74,7 @@ clean_protos:
 
 protos: protos_go protos_npm
 
-protos_go: clean_protos buf run_go_generate run_go_fmt
+protos_go: clean_protos buf_up run_go_generate run_go_fmt
 
 protos_npm: buf_node node_generate_index pb_link_dir
 

@@ -16,12 +16,14 @@ Before setting up the environment, certain dependencies need to be installed bas
 - **For MacOS users**:
     - Ensure **Go** and **Node** are both installed   
     - Ensure that you have **Homebrew** and **AWS CLI** installed.
-    - Ensure make command is available
+    - Ensure **make** command is available
+    - Ensure **docker-compose** command is available
 
 - **For Linux (Ubuntu) users**:
     - Ensure **Go** and **Node** are both installed
     - Ensure that you have **AWS CLI** installed.
-    - Ensure make command is available 
+    - Ensure **make** command is available
+    - Ensure **docker compose** command is available
 
 **Note:**
 - The installation script may require root permissions.

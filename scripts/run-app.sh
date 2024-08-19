@@ -1,5 +1,13 @@
 #!/bin/sh
-docker-compose -f docker/database/docker-compose.yaml up -d
+
+OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+COMPOSE=""
+if "$OS" = "linux" then
+  COMPOSE="docker compose"
+else
+  COMPOSE="docker-compose"
+fi
+$COMPOSE -f docker/database/docker-compose.yaml up -d
 sleep 5
 DB_HOST="localhost"
 DB_PORT="5432"
@@ -28,7 +36,7 @@ fi
 unset PGPASSWORD
 
 export $(grep -v '^#' ./.properties | xargs)
-docker-compose -f docker/operations_service/docker-compose.yaml up -d
-docker-compose -f docker/users_service/docker-compose.yaml up -d
-docker-compose -f docker/public_api/docker-compose.yaml up -d
-docker-compose -f docker/web_client/docker-compose.yaml up -d
+$COMPOSE -f docker/operations_service/docker-compose.yaml up -d
+$COMPOSE -f docker/users_service/docker-compose.yaml up -d
+$COMPOSE -f docker/public_api/docker-compose.yaml up -d
+$COMPOSE -f docker/web_client/docker-compose.yaml up -d

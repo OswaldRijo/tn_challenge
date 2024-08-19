@@ -108,8 +108,8 @@ go install github.com/vektra/mockery/v2@v2.44.2
 
 ### Sns Sqs config
 
-First create sns topic with name **tn_user_created_topic** and queue with name ***tn_user_created_queue*, then follow these instructions to complete the configuration https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html
-After the creation and association are done, save the queue name and topic arn at **.properties** file at root as follows.
+First create sns topic with name **tn_user_created_topic** and queue with name **tn_user_created_queue**, then follow these instructions to complete the configuration https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-configure-subscribe-queue-sns-topic.html
+After the creation and association are done, create **.properties** file at root and save the queue name and topic arn in it as follows.
 ```txt
 USER_CREATED_QUEUE=tn_user_created_queue
 USER_CREATED_TOPIC_ARN=arn:aws:sns:us-east-2:<ACCOUNT_ID>:tn_user_created_topic

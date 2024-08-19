@@ -1,5 +1,3 @@
-version: '3.7'
-
 services:
   tn_public_api:
     build:

@@ -14,10 +14,14 @@ This project is part of a technical challenge aimed at assessing programming ski
 Before setting up the environment, certain dependencies need to be installed based on your operating system:
 
 - **For MacOS users**:
+    - Ensure **Go** and **Node** are both installed   
     - Ensure that you have **Homebrew** and **AWS CLI** installed.
+    - Ensure make command is available
 
 - **For Linux (Ubuntu) users**:
+    - Ensure **Go** and **Node** are both installed
     - Ensure that you have **AWS CLI** installed.
+    - Ensure make command is available 
 
 **Note:**
 - The installation script may require root permissions.

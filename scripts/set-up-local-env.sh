@@ -20,14 +20,6 @@ else
 fi
 
 ./scripts/install-mockery.sh
-./scripts/install-buf.sh
-
-sudo make protos_go
-sudo make protos_npm
-
-./scripts/install-docker-compose.sh
-./scripts/install-psql.sh
-
 
 AWS_REGION=us-east-2
 AWS_ACCOUNT=$(aws sts get-caller-identity --query "Account" --output text)

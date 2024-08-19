@@ -4,6 +4,7 @@ OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 COMPOSE=""
 if [ "$OS" = "linux" ]; then
   COMPOSE="docker compose"
+  sudo systemctl stop postgresql
 else
   COMPOSE="docker-compose"
 fi

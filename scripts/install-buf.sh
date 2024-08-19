@@ -57,9 +57,9 @@ install_buf_macos() {
 if check_buf; then
     echo "Buf is ready to go."
 else
-    if [ "$OS" == "linux" ]; then
+    if [ "$OS" = "linux" ]; then
         install_buf_linux
-    elif [ "$OS" == "darwin" ]; then
+    elif [ "$OS" = "darwin" ]; then
         install_buf_macos
     else
         echo "OS NOT SUPPORTED. Please, install Buf manually."

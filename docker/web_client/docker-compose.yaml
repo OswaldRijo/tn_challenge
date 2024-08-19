@@ -12,7 +12,6 @@ services:
       REACT_APP_PORT: "3000"
     networks:
       - default
-      - backend
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
 

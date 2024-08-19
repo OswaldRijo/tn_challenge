@@ -2,15 +2,26 @@
 
 PROJECT=truenorthchallenge
 BUF_VERSION=1.30.1
+OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 
 check_buf() {
-    if command -v buf &> /dev/null; then
-        echo "Buf already installed. Version: $(buf --version)"
-        return 0
-    else
-        echo "Buf not installed"
-        return 1
-    fi
+  if [ "$OS" == "linux" ]; then
+    return 0
+  fi
+  if command -v buf &> /dev/null; then
+     buf_output=$(buf --version 2>&1)
+     buf_status=$?
+
+     if [ $buf_status -eq 0 ]; then
+       echo "Buf is installed. Version: $buf_output"
+       return 0
+     else
+       echo "Buf command found, but it failed to execute properly."echo"Error output: $buf_output"return 1
+     fi
+  else
+     echo "Buf is not installed."
+     return 1
+  fi
 }
 
 install_buf_linux() {
@@ -39,7 +50,7 @@ install_buf_macos() {
     buf --version
 }
 
-OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
+
 
 if check_buf; then
     echo "Buf is ready to go."

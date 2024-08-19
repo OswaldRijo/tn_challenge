@@ -2,7 +2,7 @@
 
 OS="$(uname -s | tr '[:upper:]' '[:lower:]')"
 COMPOSE=""
-if ["$OS" = "linux"]; then
+if [ "$OS" = "linux" ]; then
   COMPOSE="docker compose"
 else
   COMPOSE="docker-compose"

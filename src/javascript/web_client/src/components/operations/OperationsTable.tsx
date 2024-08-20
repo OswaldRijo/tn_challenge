@@ -2,13 +2,29 @@ import { useEffect } from 'react';
 import * as React from 'react';
 import { useTranslation } from 'react-i18next';
 import DeleteIcon from '@mui/icons-material/Delete';
-import { IconButton, Table, TableBody, TableCell, TableContainer, TableHead, TablePagination, TableRow, Tooltip } from '@mui/material';
+import {
+  Box,
+  IconButton,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TablePagination,
+  TableRow,
+  TableSortLabel,
+  Tooltip
+} from '@mui/material';
+import { visuallyHidden } from '@mui/utils';
 
 import TableSkeleton from '@/components/operations/TableSkeleton';
 import { dispatch, useSelector } from '@/store';
 import { deleteOperation, filterOperations } from '@/store/slices/operation';
 import { openSnackbar } from '@/store/slices/snackbar';
 import { OperatorTypeToSignMap } from '@/types/operation';
+
+const SORTABLE_FIELDS = ['id', 'createdAt'];
+type SortBy = 'asc' | 'desc' | '';
 
 export default function OperationsTable() {
   const { t } = useTranslation(['client', 'server']);
@@ -64,29 +80,36 @@ export default function OperationsTable() {
   const operationsSelector = useSelector((s) => s.operations);
   const [page, setPage] = React.useState<number>(0);
   const [limit, setLimit] = React.useState<number>(10);
+  const [orderBy, setOrderBy] = React.useState<string>('');
+  const [sortBy, setSortBy] = React.useState<SortBy>('');
 
-  const filterUserOperations = (page: number, limit: number) => {
-    dispatch(filterOperations({ page, limit })).catch((e) => {
-      dispatch(
-        openSnackbar({
-          open: true,
-          message: t(e.message),
-          anchorOrigin: { vertical: 'top', horizontal: 'right' },
-          variant: 'alert',
-          closeColor: 'white',
-          alert: {
-            color: 'error'
-          },
-          close: true,
-          transition: 'SlideLeft'
-        })
-      );
-    });
+  const filterUserOperations = (page: number, limit: number, orderBy: string, sortBy: SortBy) => {
+    dispatch(filterOperations({ page, limit, orderBy, sortBy }))
+      .then(() => {
+        setOrderBy(orderBy);
+        setSortBy(sortBy);
+      })
+      .catch((e) => {
+        dispatch(
+          openSnackbar({
+            open: true,
+            message: t(e.message),
+            anchorOrigin: { vertical: 'top', horizontal: 'right' },
+            variant: 'alert',
+            closeColor: 'white',
+            alert: {
+              color: 'error'
+            },
+            close: true,
+            transition: 'SlideLeft'
+          })
+        );
+      });
   };
 
   const deleteUserOperation = (id: number) => {
     dispatch(deleteOperation(id))
-      .then(() => filterUserOperations(page, limit))
+      .then(() => filterUserOperations(page, limit, orderBy, sortBy))
       .catch((e) => {
         dispatch(
           openSnackbar({
@@ -106,21 +129,24 @@ export default function OperationsTable() {
   };
 
   useEffect(() => {
-    filterUserOperations(page, limit);
+    filterUserOperations(page, limit, orderBy, sortBy);
   }, []);
 
   function handleChangePage(e, p: number) {
     setPage(p);
-    filterUserOperations(p, limit);
+    filterUserOperations(p, limit, orderBy, sortBy);
   }
 
   function handleChangeRowsPerPage(r) {
     setLimit(r);
-    filterUserOperations(page, r);
   }
 
   function handleDeleteRow(id: number) {
     deleteUserOperation(id);
+  }
+
+  function handleRequestSort(field: string, sb: SortBy) {
+    filterUserOperations(page, limit, field, sb);
   }
 
   if (operationsSelector.isFetching) return <TableSkeleton />;
@@ -132,7 +158,35 @@ export default function OperationsTable() {
           <TableHead>
             <TableRow>
               {columns.map((column, i) => {
-                return <TableCell key={i}>{column.headerName}</TableCell>;
+                if (SORTABLE_FIELDS.includes(column.field)) {
+                  const isActive = orderBy === column.field;
+                  const currentSort = sortBy !== '' ? sortBy : 'asc';
+                  const sortingType = currentSort === 'asc' ? 'desc' : 'asc';
+                  return (
+                    <TableCell key={column.field} align={'left'} sortDirection={isActive ? currentSort : false}>
+                      <TableSortLabel
+                        active={isActive}
+                        direction={currentSort}
+                        onClick={() => {
+                          if (isActive) {
+                            handleRequestSort('', '');
+                          } else {
+                            handleRequestSort(column.field, sortingType);
+                          }
+                        }}
+                      >
+                        {column.headerName}
+                        {orderBy.indexOf(column.field) >= 0 ? (
+                          <Box component="span" sx={visuallyHidden}>
+                            {currentSort === 'desc' ? 'sorted descending' : 'sorted ascending'}
+                          </Box>
+                        ) : null}
+                      </TableSortLabel>
+                    </TableCell>
+                  );
+                } else {
+                  return <TableCell key={i}>{column.headerName}</TableCell>;
+                }
               })}
             </TableRow>
           </TableHead>

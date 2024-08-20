@@ -115,12 +115,22 @@ export function applyOperation(operation: ApplyOperation) {
   };
 }
 
-export function filterOperations({ limit = 10, page = 0 }: { limit?: number; page?: number }) {
+export function filterOperations({
+  limit = 10,
+  page = 0,
+  sortBy = '',
+  orderBy = ''
+}: {
+  limit?: number;
+  page?: number;
+  orderBy?: string;
+  sortBy?: string;
+}) {
   dispatch(slice.actions.setLoading({ isLoading: true }));
   dispatch(slice.actions.setIsFetching({ isFetching: true }));
   return async () => {
     try {
-      const response = await axios.get(API_ENDPOINTS.OPERATIONS, { params: { limit, page } });
+      const response = await axios.get(API_ENDPOINTS.OPERATIONS, { params: { limit, page, orderBy, sortBy } });
       dispatch(slice.actions.setFilterOperationsSuccess(response.data));
     } catch (e) {
       const error = e as ServerError;

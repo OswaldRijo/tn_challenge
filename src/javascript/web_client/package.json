@@ -10,6 +10,7 @@
     "@mui/lab": "5.0.0-alpha.173",
     "@mui/material": "^5.16.7",
     "@mui/styled-engine": "^5.16.6",
+    "@mui/utils": "^5.16.6",
     "@protobuf-ts/runtime": "^2.9.4",
     "@protobuf-ts/runtime-rpc": "^2.9.4",
     "@reduxjs/toolkit": "^2.2.7",

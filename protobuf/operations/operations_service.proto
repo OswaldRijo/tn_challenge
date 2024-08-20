@@ -7,6 +7,22 @@ option go_package = "truenorth/go/pb/operations";
 import "operations/structures.proto";
 import "google/protobuf/timestamp.proto";
 
+enum OrderTypeEnum {
+  ASC = 0;
+  DESC = 1;
+}
+
+enum OrderFieldsEnum {
+  ID = 0;
+  CREATED_AT = 1;
+  OPERATION = 2;
+}
+
+message OrderBy {
+  OrderFieldsEnum orderField = 1;
+  OrderTypeEnum orderType = 2;
+}
+
 message ApplyOperationRequest {
   OperationType operationType = 1;
   repeated double args = 2;
@@ -31,6 +47,7 @@ message FilterRecordsRequest {
   optional int64 userId = 1;
   optional int32 limit = 2;
   optional int32 page = 3;
+  repeated OrderBy orderByFields = 4;
 }
 
 message FilterRecordsResponse {

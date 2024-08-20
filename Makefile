@@ -39,21 +39,11 @@ run_go_fmt:
 run_go_generate:
 	cd src/go && go generate ./...;
 
-buf_up:
-	buf generate protobuf
-	@echo "Command ran successfully";
-
-go_mocks:
-	@echo "Running go mocks"
-	cd src/go && go generate ./...
-
-test: protos ## Launch tests
+test: ## Launch tests
 	go test ./...
 
-coverage: protos ## Launch tests
+coverage:  ## Launch tests
 	go test ./... -cover
-
-rebuild: clean protos ## Rebuild the whole project
 
 about: ## Display info related to the build
 	@echo "OS: ${OS}"
@@ -66,30 +56,4 @@ about: ## Display info related to the build
 help: ## Show this help
 	@${HELP_CMD}
 
-clean_protos:
-	rm -rf ${PROTO_DIR_GEN_NODE}/src
-	mkdir ${PROTO_DIR_GEN_NODE}/src
-	touch ${PROTO_DIR_GEN_NODE}/src/index.ts
-	rm -rf ${PROTO_DIR_GEN_GO}
-
-protos: protos_go protos_npm
-
-protos_go: clean_protos buf_up run_go_generate run_go_fmt
-
-protos_npm: buf_node node_generate_index pb_link_dir
-
-go_generate:
-	cd src/go && go generate $(dir)
-
-buf_node:
-	cd ${PROTO_DIR_GEN_NODE} && buf generate ./../../../protobuf
-	@echo "Command ran successfully";
-
-pb_link_dir:
-	rm -rf src/javascript/public_api/src/pb
-	cp -r ${PROTO_DIR_GEN_NODE}/src src/javascript/public_api/src/pb
-	@echo "Command ran successfully";
-
-node_generate_index:
-	pnpm run --prefix src/javascript/pb generate-index
-	@echo "Index.ts created successfully";
+go_mocks: run_go_generate run_go_fmt

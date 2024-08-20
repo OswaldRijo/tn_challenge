@@ -1,4 +1,4 @@
-import { CreateUserResponse, CreateUserRequest } from '@/pb';
+import { CreateUserRequest } from '@/pb';
 import { throwErrorBasedOnType } from '@/utils/rpc-errors';
 import {
   Body,
@@ -32,10 +32,10 @@ export class UserController {
   @HttpCode(HttpStatus.OK)
   async createUser(@Body() body: CreateUserRequest): Promise<object> {
     try {
-      const response = await this.usersService.CreateUser(
-        CreateUserRequest.fromObject(body),
+      const { response } = await this.usersService.createUser(
+        CreateUserRequest.create(body),
       );
-      return response.toObject();
+      return response;
     } catch (e) {
       throwErrorBasedOnType(e);
     }

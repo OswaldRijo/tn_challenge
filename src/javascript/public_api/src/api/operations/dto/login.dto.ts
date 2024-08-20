@@ -6,6 +6,12 @@ export class OperationsQueryDto {
 
   @IsString()
   page: string;
+
+  @IsString()
+  orderBy: string;
+
+  @IsString()
+  sortBy: string;
 }
 
 export class DeleteOperationDto {

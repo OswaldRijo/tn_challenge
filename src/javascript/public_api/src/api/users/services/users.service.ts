@@ -1,5 +1,5 @@
 import { CreateUserRequest, User, UserServiceClient } from '@/pb';
-import { ChannelCredentials } from '@grpc/grpc-js';
+import { getTransport } from '@/rpc_clients/grpc-transport';
 import { Injectable } from '@nestjs/common';
 import { validateNonNull } from '@/utils/validate-non-null';
 import { isErrorNotFound } from '@/rpc_clients/responses';
@@ -8,12 +8,12 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class UsersService extends UserServiceClient {
   constructor() {
-    super(process.env.USERS_SERVICE_PATH, ChannelCredentials.createInsecure());
+    super(getTransport());
   }
 
   async create(user): Promise<User> {
     try {
-      const createUserRequest = CreateUserRequest.fromObject({
+      const createUserRequest = CreateUserRequest.create({
         ...user,
         password: uuidv4().toString(),
       });

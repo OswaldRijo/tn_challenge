@@ -12,17 +12,16 @@ export class AuthService {
 
   async signIn(username: string, password: string) {
     try {
-      const response = await this.usersService.CheckUserCredentials(
-        CheckUserCredentialsRequest.fromObject({
+      const { response } = await this.usersService.checkUserCredentials(
+        CheckUserCredentialsRequest.create({
           username,
           password,
         }),
       );
-      const res = response.toObject();
       const payload = {
-        userId: res.user.id,
-        username: res.user.username,
-        status: res.user.status,
+        userId: response.user.id,
+        username: response.user.username,
+        status: response.user.status,
       };
       const refreshTokenPayload = {};
       const [accessToken, refreshToken] = await Promise.all([

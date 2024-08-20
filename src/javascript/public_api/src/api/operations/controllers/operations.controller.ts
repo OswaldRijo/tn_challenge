@@ -1,12 +1,17 @@
+import { AuthGuard } from '@/api/auth/guards/jwt-auth.guard';
 import {
   DeleteOperationDto,
   OperationsQueryDto,
 } from '@/api/operations/dto/login.dto';
+import { OperationsService } from '@/api/operations/services/operations.service';
 import {
   ApplyOperationRequest,
   DeleteRecordsRequest,
   FilterRecordsRequest,
   GetUserBalanceRequest,
+  OrderBy,
+  OrderFieldsEnum,
+  OrderTypeEnum,
 } from '@/pb';
 import { throwErrorBasedOnType } from '@/utils/rpc-errors';
 import {
@@ -20,8 +25,6 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { OperationsService } from '@/api/operations/services/operations.service';
-import { AuthGuard } from '@/api/auth/guards/jwt-auth.guard';
 
 @Controller('api/operations')
 export class OperationsController {
@@ -34,13 +37,13 @@ export class OperationsController {
     @Req() req,
   ): Promise<object> {
     try {
-      const response = await this.operationsService.ApplyOperation(
-        ApplyOperationRequest.fromObject({
+      const { response } = await this.operationsService.applyOperation(
+        ApplyOperationRequest.create({
           ...applyOpBody,
           userId: req.user.userId,
         }),
       );
-      return response.toObject();
+      return response;
     } catch (e) {
       throwErrorBasedOnType(e);
     }
@@ -53,14 +56,19 @@ export class OperationsController {
     @Req() req,
   ): Promise<object> {
     try {
-      const response = await this.operationsService.FilterRecords(
-        FilterRecordsRequest.fromObject({
+      const orderByFields = this.setUpOrderByFields(
+        params.orderBy,
+        params.sortBy,
+      );
+      const { response } = await this.operationsService.filterRecords(
+        FilterRecordsRequest.create({
           limit: parseInt(params.limit || '10'),
           page: parseInt(params.page || '0'),
           userId: req.user.userId,
+          orderByFields: orderByFields,
         }),
       );
-      return response.toObject();
+      return response;
     } catch (e) {
       throwErrorBasedOnType(e);
     }
@@ -70,12 +78,12 @@ export class OperationsController {
   @UseGuards(AuthGuard)
   async userBalance(@Req() req): Promise<object> {
     try {
-      const response = await this.operationsService.GetUserBalance(
-        GetUserBalanceRequest.fromObject({
+      const { response } = await this.operationsService.getUserBalance(
+        GetUserBalanceRequest.create({
           userId: req.user.userId,
         }),
       );
-      return response.toObject();
+      return response;
     } catch (e) {
       throwErrorBasedOnType(e);
     }
@@ -88,15 +96,66 @@ export class OperationsController {
     @Req() req,
   ): Promise<object> {
     try {
-      const response = await this.operationsService.DeleteRecords(
-        DeleteRecordsRequest.fromObject({
+      const { response } = await this.operationsService.deleteRecords(
+        DeleteRecordsRequest.create({
           userId: req.user.userId,
           recordIds: [req.params.id],
         }),
       );
-      return response.toObject();
+      return response;
     } catch (e) {
       throwErrorBasedOnType(e);
     }
+  }
+  private setUpOrderByFields(orderBy: string, sortBy: string): OrderBy[] {
+    if (orderBy === 'id') {
+      if (sortBy === 'asc') {
+        return [
+          OrderBy.create({
+            orderType: OrderTypeEnum.ASC,
+            orderField: OrderFieldsEnum.ID,
+          }),
+        ];
+      }
+      return [
+        OrderBy.create({
+          orderType: OrderTypeEnum.DESC,
+          orderField: OrderFieldsEnum.ID,
+        }),
+      ];
+    }
+    if (orderBy === 'operation') {
+      if (sortBy === 'asc') {
+        return [
+          OrderBy.create({
+            orderType: OrderTypeEnum.ASC,
+            orderField: OrderFieldsEnum.OPERATION,
+          }),
+        ];
+      }
+      return [
+        OrderBy.create({
+          orderType: OrderTypeEnum.DESC,
+          orderField: OrderFieldsEnum.OPERATION,
+        }),
+      ];
+    }
+    if (orderBy === 'createdAt') {
+      if (sortBy === 'asc') {
+        return [
+          OrderBy.create({
+            orderType: OrderTypeEnum.ASC,
+            orderField: OrderFieldsEnum.CREATED_AT,
+          }),
+        ];
+      }
+      return [
+        OrderBy.create({
+          orderType: OrderTypeEnum.DESC,
+          orderField: OrderFieldsEnum.CREATED_AT,
+        }),
+      ];
+    }
+    return [];
   }
 }

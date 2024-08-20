@@ -54,5 +54,6 @@ log
 
 proto/gen
 build
+src/javascript/pb
 src/go/mocks
 .properties

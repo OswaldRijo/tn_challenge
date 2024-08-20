@@ -15,7 +15,7 @@ This project is part of a trueNorth technical challenge. The automatic local set
 - [Troubleshooting](#troubleshooting)
 
 ## About
-This project has been implemented using Aws services. You're going to find the live version at **https://personal.oswaldrijo.site/**.
+This project has been implemented on a **Monorepo** using Aws services. You're going to find the live version at **https://personal.oswaldrijo.site/**.
 
 The credentials to get access are Username: **username** and Password **pass1**, nevertheless if you decide to create your own
 user, the app is prepared for creating users.
@@ -84,7 +84,7 @@ If you're not seeing the message please go to [Troubleshooting section](#trouble
 
 ## Run App
 
-To start the application, execute the following command:
+To start the application, first refresh your AWS credentials in the same terminal you're about to use, then execute the following command:
 ```bash
 ./scripts/run-app.sh
 ```

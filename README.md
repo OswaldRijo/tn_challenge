@@ -1,6 +1,6 @@
 # Project Challenge
 
-This project is part of a trueNorth technical challenge. The automatic local set up instructions are available only for macOS distributions.
+This challenge creates a calculator and the operations are being performed on backend side. The automatic local set up instructions are available only for macOS distributions.
 
 ## Table of Contents
 - [About](#about)
